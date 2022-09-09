@@ -29,8 +29,8 @@ Amazon Payment Services requires to test your integration before going live to v
 
 ## Screenshots
 
-<img src="https://github.com/vvvirani/flutter_amazon_payfort/master/.resources/card_payment.gif" />
-<img src="https://github.com/vvvirani/flutter_amazon_payfort/master/.resources/apple_pay_payment.png" />
+<img src="https://raw.githubusercontent.com/vvvirani/flutter_amazon_payfort/main/.resources/card_payment.gif" />
+<img src="https://raw.githubusercontent.com/vvvirani/flutter_amazon_payfort/main/.resources/apple_pay_payment.png" />
 
 
 ## Installation
