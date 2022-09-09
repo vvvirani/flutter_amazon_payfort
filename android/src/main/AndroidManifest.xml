@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.vvvirani.amazon_payfort">
+    <application
+        android:theme="@style/Theme.AppCompat">
+        <activity
+            android:name=".PayFortService"
+            android:label="PayFortService"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+    </application>
+
+</manifest>
