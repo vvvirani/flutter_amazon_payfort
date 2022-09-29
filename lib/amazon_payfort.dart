@@ -43,7 +43,11 @@ class AmazonPayfort {
   /// must be used for creating the sdk_token from your business security server:
   ///
   Future<String?> getDeviceId() {
-    return _platform.getDeviceId();
+    if (_isInitialize) {
+      return _platform.getDeviceId();
+    } else {
+      throw _payFortInitializeException();
+    }
   }
 
   /// The Signature is a parameter that holds the digital signature value calculated by the SHA algorithm.
@@ -54,10 +58,14 @@ class AmazonPayfort {
     required String shaType,
     required String concatenatedString,
   }) {
-    return _platform.generateSignature(
-      shaType: shaType,
-      concatenatedString: concatenatedString,
-    );
+    if (_isInitialize) {
+      return _platform.generateSignature(
+        shaType: shaType,
+        concatenatedString: concatenatedString,
+      );
+    } else {
+      throw _payFortInitializeException();
+    }
   }
 
   /// Standard payment screen.

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:amazon_payfort/amazon_payfort.dart';
 import 'package:amazon_payfort/src/local_platform.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +13,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
 
   @override
   Future<bool> initialize(PayFortOptions options) async {
-    var arguments = Platform.isAndroid
+    var arguments = _platform.isAndroid
         ? options.payFortAndroidOptions()
         : options.payFortIosOptions();
     return (await methodChannel.invokeMethod<bool>('initialize', arguments)) ??
@@ -24,7 +22,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
 
   @override
   Future<String?> getDeviceId() {
-    String method = Platform.isIOS ? 'getUDID' : 'getDeviceId';
+    String method = _platform.isIOS ? 'getUDID' : 'getDeviceId';
     return methodChannel.invokeMethod<String?>(method);
   }
 

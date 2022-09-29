@@ -1,14 +1,16 @@
 /// These are the URLs you need to use when you request a mobile SDK token for your Android app:
 enum FortEnvironment {
-  /// Test environment
-  /// https://sbpaymentservices.payfort.com
-  test('https://sbpaymentservices.payfort.com/FortAPI/paymentApi'),
+  /// Test Environment
+  test('https://sbpaymentservices.payfort.com'),
 
-  // Production environment
-  /// https://paymentservices.payfort.com
-  production('https://paymentservices.payfort.com/FortAPI/paymentApi');
+  // Production Environment
+  production('https://paymentservices.payfort.com');
 
-  final String url;
+  final String _baseUrl;
 
-  const FortEnvironment(this.url);
+  String get baseUrl => _baseUrl;
+
+  String get paymentApi => '$_baseUrl/FortAPI/paymentApi';
+
+  const FortEnvironment(this._baseUrl);
 }
