@@ -2,7 +2,7 @@ import 'package:amazon_payfort/amazon_payfort.dart';
 import 'package:flutter/material.dart';
 
 class PaymentResultScreen extends StatelessWidget {
-  final PayfortResult result;
+  final PayFortResult result;
 
   const PaymentResultScreen(this.result, {super.key});
 

@@ -41,15 +41,15 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
   }
 
   @override
-  Future<PayfortResult> callPayFort(FortRequest request) {
+  Future<PayFortResult> callPayFort(FortRequest request) {
     var arguments = request.toFortRequest();
     return methodChannel.invokeMethod('callPayFort', arguments).then((result) {
-      return PayfortResult.fromMap(Map<String, dynamic>.from(result));
+      return PayFortResult.fromMap(Map<String, dynamic>.from(result));
     });
   }
 
   @override
-  Future<PayfortResult> callPayFortForApplePay({
+  Future<PayFortResult> callPayFortForApplePay({
     required FortRequest request,
     required String applePayMerchantId,
   }) {
@@ -59,7 +59,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
       return methodChannel
           .invokeMethod('callPayFortForApplePay', arguments)
           .then((result) {
-        return PayfortResult.fromMap(Map<String, dynamic>.from(result));
+        return PayFortResult.fromMap(Map<String, dynamic>.from(result));
       });
     } else {
       throw Exception('Apple Pay is not supported on this device');

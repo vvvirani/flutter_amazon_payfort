@@ -72,7 +72,7 @@ class AmazonPayfort {
   /// You can use the standard Amazon Payment Services mobile SDK interface to display a standard payment screen.
   /// This standard payment view is customizable in three ways.
   ///
-  Future<PayfortResult> callPayFort(FortRequest request) {
+  Future<PayFortResult> callPayFort(FortRequest request) {
     if (_isInitialize) {
       return _platform.callPayFort(request);
     } else {
@@ -82,7 +82,7 @@ class AmazonPayfort {
 
   ///  Apple Pay is a digital wallet that allows your customers to
   /// make payments using different Apple devices via the Amazon Payment Services iOS SDK.
-  Future<PayfortResult> callPayFortForApplePay({
+  Future<PayFortResult> callPayFortForApplePay({
     required FortRequest request,
     required String applePayMerchantId,
   }) {

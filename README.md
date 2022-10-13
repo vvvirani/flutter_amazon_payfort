@@ -80,8 +80,8 @@ The library offers several methods to handle stripe related actions:
 ```dart
 Future<String?> getDeviceId(...);
 Future<String?> generateSignature(...);
-Future<PayfortResult> callPayFort(...);
-Future<PayfortResult> callPayFortForApplePay(...);
+Future<PayFortResult> callPayFort(...);
+Future<PayFortResult> callPayFortForApplePay(...);
 ```
 
 ## Run the example app

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:amazon_payfort/src/enums/response_status.dart';
 
-class PayfortResult {
-  PayfortResult({
+class PayFortResult {
+  PayFortResult({
     this.responseCode,
     this.responseStatus,
     this.responseMessage,
@@ -113,8 +113,8 @@ class PayfortResult {
   ///
   String? phoneNumber;
 
-  factory PayfortResult.fromMap(Map<String, dynamic> data) {
-    return PayfortResult(
+  factory PayFortResult.fromMap(Map<String, dynamic> data) {
+    return PayFortResult(
       responseCode: data['response_code'],
       responseStatus: ResponseStatus.values[data['response_status']],
       responseMessage: data['response_message'],

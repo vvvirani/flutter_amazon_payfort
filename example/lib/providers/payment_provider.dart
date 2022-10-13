@@ -5,7 +5,7 @@ import 'package:amazon_payfort_example/models/sdk_token_response.dart';
 import 'package:amazon_payfort_example/providers/default_change_notifier.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
-typedef PaymentCompleteCallback = void Function(PayfortResult result);
+typedef PaymentCompleteCallback = void Function(PayFortResult result);
 
 typedef PaymentErrorCallback = void Function(String message);
 
