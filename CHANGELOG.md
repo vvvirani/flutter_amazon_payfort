@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Improve performance and bug fixes
+
 ## 0.0.3
 
 * Upgrade Dart SDK version
