@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Add Mada and Amex card support for Apple Pay
+
 ## 0.0.4
 
 * Improve performance and bug fixes

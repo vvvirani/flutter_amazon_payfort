@@ -94,7 +94,11 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         
         let paymentRequest = PKPaymentRequest()
         paymentRequest.merchantIdentifier = (requestData["applePayMerchantId"] as? String) ?? "";
-        paymentRequest.supportedNetworks = [.visa, .masterCard];
+        if #available(iOS 12.1.1, *) {
+            paymentRequest.supportedNetworks = [.visa, .masterCard, .mada, .amex]
+        } else {
+            paymentRequest.supportedNetworks = [.visa, .masterCard, .amex]
+        };
         paymentRequest.merchantCapabilities = .capability3DS;
         paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: decimal(with: (requestData["amount"] as? String) ?? "0.0"))]
         paymentRequest.countryCode = "SA";
