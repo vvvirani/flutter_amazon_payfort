@@ -5,10 +5,6 @@ import 'package:amazon_payfort_example/models/sdk_token_response.dart';
 import 'package:amazon_payfort_example/providers/default_change_notifier.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
-typedef PaymentCompleteCallback = void Function(PayFortResult result);
-
-typedef PaymentErrorCallback = void Function(String message);
-
 class PaymentProvider extends DefaultChangeNotifier {
   final AmazonPayfort _payfort = AmazonPayfort.instance;
 
@@ -17,13 +13,14 @@ class PaymentProvider extends DefaultChangeNotifier {
   Future<void> init() async {
     /// Step 1:  Initialize Amazon Payfort
     await AmazonPayfort.initialize(
-      PayFortOptions(environment: FortConstants.environment),
+      const PayFortOptions(environment: FortConstants.environment),
     );
   }
 
-  Future<void> paymentWithCraditOrDebitCard({
-    required PaymentCompleteCallback onCompleted,
-    required PaymentErrorCallback onError,
+  Future<void> paymentWithCreditOrDebitCard({
+    required SucceededCallback onSucceeded,
+    required FailedCallback onFailed,
+    required CancelledCallback onCancelled,
   }) async {
     try {
       var sdkTokenResponse = await _generateSdkToken();
@@ -37,19 +34,23 @@ class PaymentProvider extends DefaultChangeNotifier {
         sdkToken: sdkTokenResponse?.sdkToken ?? '',
         merchantReference: 'Order ${DateTime.now().millisecondsSinceEpoch}',
         currency: 'SAR',
-        customerIp: await _info.getWifiIP(),
+        customerIp: (await _info.getWifiIP() ?? ''),
       );
 
-      var payfortResult = await _payfort.callPayFort(request);
-      onCompleted(payfortResult);
+      _payfort.callPayFort(
+        request: request,
+        onSucceeded: onSucceeded,
+        onFailed: onFailed,
+        onCancelled: onCancelled,
+      );
     } catch (e) {
-      onError(e.toString());
+      onFailed(e.toString());
     }
   }
 
   Future<void> paymentWithApplePay({
-    required PaymentCompleteCallback onCompleted,
-    required PaymentErrorCallback onError,
+    required ApplePaySucceededCallback onSucceeded,
+    required ApplePayFailedCallback onFailed,
   }) async {
     try {
       var sdkTokenResponse = await _generateSdkToken(isApplePay: true);
@@ -63,16 +64,17 @@ class PaymentProvider extends DefaultChangeNotifier {
         sdkToken: sdkTokenResponse?.sdkToken ?? '',
         merchantReference: 'Order ${DateTime.now().millisecondsSinceEpoch}',
         currency: 'SAR',
-        customerIp: await _info.getWifiIP(),
+        customerIp: (await _info.getWifiIP() ?? ''),
       );
 
-      var payfortResult = await _payfort.callPayFortForApplePay(
+      _payfort.callPayFortForApplePay(
         request: request,
         applePayMerchantId: FortConstants.applePayMerchantId,
+        onSucceeded: onSucceeded,
+        onFailed: onFailed,
       );
-      onCompleted(payfortResult);
     } catch (e) {
-      onError(e.toString());
+      onFailed(e.toString());
     }
   }
 

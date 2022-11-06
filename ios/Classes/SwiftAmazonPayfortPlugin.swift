@@ -1,11 +1,9 @@
 import Flutter
 import UIKit
 
-public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin, ApplePayResponseDelegateProtocol {
+public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin {
     
-    private var result :FlutterResult? = nil
-    
-    private var fortDelegate = PayFortDelegate()
+    public static var fortDelegate = PayFortDelegate()
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         
@@ -13,26 +11,29 @@ public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin, ApplePayResponse
         
         let instance = SwiftAmazonPayfortPlugin()
         
+        fortDelegate.setFlutterMethodChannel(channel: channel)
+        
         registrar.addMethodCallDelegate(instance, channel: channel)
+        
     }
     
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        self.result = result
+        
+        let delegate = SwiftAmazonPayfortPlugin.fortDelegate
         
         if call.method == "initialize" {
             
             if let arguments = call.arguments as? Dictionary<String, Any>{
                 let options = processPayFortOptions(arguments: arguments)
-                fortDelegate.initialize(options: options)
-                fortDelegate.responseDelegate = self
+                delegate.initialize(options: options)
                 result(true)
             }
             result(false)
             
         } else if call.method == "getUDID" {
             
-            let udid = fortDelegate.getUDID()
+            let udid = delegate.getUDID()
             result(udid)
             
         } else if call.method == "generateSignature" {
@@ -40,7 +41,7 @@ public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin, ApplePayResponse
             if let args = call.arguments as? Dictionary<String, Any>{
                 _ = args["shaType"] as? String
                 let string = args["concatenatedString"] as? String
-                let signature = fortDelegate.generateSignature(concatenatedString: string)
+                let signature = delegate.generateSignature(concatenatedString: string)
                 result(signature)
             }
             
@@ -48,26 +49,19 @@ public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin, ApplePayResponse
             
             if let requestData = call.arguments as? Dictionary<String, Any>{
                 let viewController = UIApplication.shared.keyWindow?.rootViewController ?? UIViewController()
-                fortDelegate.callPayFort(requestData: requestData, viewController: viewController) { response in
-                    result(response)
-                }
-                
+                delegate.callPayFort(requestData: requestData, viewController: viewController)
             }
             
         } else if call.method == "callPayFortForApplePay" {
             
             if let requestData = call.arguments as? Dictionary<String, Any>{
                 let viewController = UIApplication.shared.keyWindow?.rootViewController ?? UIViewController()
-                fortDelegate.callPayFortForApplePay(requestData: requestData, viewController: viewController)
+                delegate.callPayFortForApplePay(requestData: requestData, viewController: viewController)
             }
             
         } else {
             result(FlutterMethodNotImplemented)
         }
-    }
-    
-    func onApplePayPaymentResponse(response: [String : Any]) {
-        result?(response)
     }
     
     
@@ -80,6 +74,7 @@ public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin, ApplePayResponse
         )
         return options
     }
+    
 }
 
 

@@ -1,16 +1,24 @@
 import 'package:amazon_payfort/amazon_payfort_platform_interface.dart';
-import 'package:amazon_payfort/src/models/fort_request.dart';
-import 'package:amazon_payfort/src/models/pay_fort_result.dart';
-import 'package:amazon_payfort/src/models/payfort_options.dart';
+import 'package:amazon_payfort/src/models/fort_request/fort_request.dart';
+import 'package:amazon_payfort/src/models/pay_fort_result/pay_fort_result.dart';
+import 'package:amazon_payfort/src/models/pay_fort_options/pay_fort_options.dart';
 import 'package:flutter/services.dart';
 
 export 'src/enums/fort_environment.dart';
-export 'src/enums/response_status.dart';
 
-export 'src/models/pay_fort_result.dart';
-export 'src/models/sdk_token_request.dart';
-export 'src/models/fort_request.dart';
-export 'src/models/payfort_options.dart';
+export 'src/models/models.dart';
+
+export 'src/models/pay_fort_result/pay_fort_result.dart';
+
+typedef SucceededCallback = void Function(PayFortResult result);
+
+typedef FailedCallback = void Function(String message);
+
+typedef CancelledCallback = void Function();
+
+typedef ApplePaySucceededCallback = void Function(PayFortResult result);
+
+typedef ApplePayFailedCallback = void Function(String message);
 
 /// Amazon Payment Services is the new name for PayFort.
 /// PayFort is a leading provider of payment processing services that was acquired by Amazon in 2017.
@@ -72,9 +80,19 @@ class AmazonPayfort {
   /// You can use the standard Amazon Payment Services mobile SDK interface to display a standard payment screen.
   /// This standard payment view is customizable in three ways.
   ///
-  Future<PayFortResult> callPayFort(FortRequest request) {
+  Future<void> callPayFort({
+    required FortRequest request,
+    required SucceededCallback onSucceeded,
+    required FailedCallback onFailed,
+    required CancelledCallback onCancelled,
+  }) async {
     if (_isInitialize) {
-      return _platform.callPayFort(request);
+      return await _platform.callPayFort(
+        request: request,
+        onSucceededCallback: onSucceeded,
+        onFailedCallback: onFailed,
+        onCancelledCallback: onCancelled,
+      );
     } else {
       throw _payFortInitializeException();
     }
@@ -85,11 +103,15 @@ class AmazonPayfort {
   Future<PayFortResult> callPayFortForApplePay({
     required FortRequest request,
     required String applePayMerchantId,
-  }) {
+    required ApplePaySucceededCallback onSucceeded,
+    required ApplePayFailedCallback onFailed,
+  }) async {
     if (_isInitialize) {
-      return _platform.callPayFortForApplePay(
+      return await _platform.callPayFortForApplePay(
         request: request,
         applePayMerchantId: applePayMerchantId,
+        applePaySucceededCallback: onSucceeded,
+        applePayFailedCallback: onFailed,
       );
     } else {
       throw _payFortInitializeException();

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:amazon_payfort_example/providers/payment_provider.dart';
-import 'package:amazon_payfort_example/views/payment_result_screen.dart';
 import 'package:amazon_payfort_example/views/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -66,17 +65,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
           icon: Icons.credit_card,
           name: 'Credit or Debit Card',
           onPressed: () {
-            paymentProvider.paymentWithCraditOrDebitCard(
-              onCompleted: (result) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentResultScreen(result),
-                  ),
-                );
+            paymentProvider.paymentWithCreditOrDebitCard(
+              onSucceeded: (result) {
+                _showSnackBar('Transaction succeeded: ${result.fortId}');
               },
-              onError: (message) {
-                _showSnackBar(message);
+              onFailed: (error) {
+                _showSnackBar(error);
+              },
+              onCancelled: () {
+                _showSnackBar('Cancelled by you');
               },
             );
           },
@@ -94,16 +91,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
             name: 'Apple Pay',
             onPressed: () {
               paymentProvider.paymentWithApplePay(
-                onCompleted: (result) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentResultScreen(result),
-                    ),
-                  );
+                onSucceeded: (result) {
+                  _showSnackBar('Transaction succeeded: ${result.fortId}');
                 },
-                onError: (message) {
-                  _showSnackBar(message);
+                onFailed: (error) {
+                  _showSnackBar(error);
                 },
               );
             },
