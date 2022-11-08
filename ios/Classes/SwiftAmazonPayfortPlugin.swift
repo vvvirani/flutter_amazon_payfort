@@ -67,7 +67,7 @@ public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin {
     
     private func processPayFortOptions(arguments: Dictionary<String, Any>) -> PayFortOptions {
         let options =  PayFortOptions(
-            environment : arguments["environment"] as? String ?? "default value",
+            environment : arguments["environment"] as? String ?? "",
             hideLoading: arguments["hideLoading"] as? Bool ?? false,
             presentAsDefault: arguments["presentAsDefault"] as? Bool ?? true,
             isShowResponsePage :arguments["isShowResponsePage"] as? Bool ?? true
