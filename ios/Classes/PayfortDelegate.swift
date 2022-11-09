@@ -119,7 +119,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["digital_wallet"] = "APPLE_PAY"
             request["command"] = "PURCHASE";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
-            request["amount"] = String(amount.rounded());
+            request["amount"] = String(amount.toInt() ?? 0);
             request["currency"] = (requestData?["currency"] as? String) ?? "";
             request["language"] = (requestData?["language"] as? String) ?? "";
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
@@ -135,6 +135,9 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             payFort?.hideLoading = options?.hideLoading ?? false
             payFort?.presentAsDefault = options?.presentAsDefault ?? true
             payFort?.isShowResponsePage = options?.isShowResponsePage ?? true
+            
+            print("Request Payfort Get :\(request)")
+            
             
             payFort?.callPayFortForApplePay(
                 withRequest: request,
@@ -207,3 +210,11 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
 }
 
 
+extension Double {
+    
+    func toInt() -> Int? {
+        let roundedValue = rounded(.toNearestOrEven)
+        return Int(exactly: roundedValue)
+    }
+}
+    

@@ -1,3 +1,8 @@
+## 0.0.7
+
+* Improve performance and bug fixes
+* Fix the apple pay amount issue
+
 ## 0.0.6
 
 * Fix the initialization issue
