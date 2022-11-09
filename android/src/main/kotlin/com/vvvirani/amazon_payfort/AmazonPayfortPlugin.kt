@@ -20,30 +20,29 @@ class AmazonPayfortPlugin : FlutterPlugin,
     private lateinit var binding: ActivityPluginBinding
 
     private var fortRequest = FortRequest()
-    private var service: PayFortService? = null
+    private var service: PayFortService = PayFortService()
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger,
             "vvvirani/amazon_payfort")
         channel.setMethodCallHandler(this)
-
         context = flutterPluginBinding.applicationContext
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {
         when (call.method) {
             "initialize" -> {
-                if (service == null) {
+                try {
                     val options = processPayFortOptions(call)
-                    service = PayFortService()
-                    service?.initService(options)
+                    service.initService(channel, options)
                     binding.addActivityResultListener { requestCode, resultCode, data ->
-                        service?.onActivityResult(requestCode, resultCode, data)
+                        service.onActivityResult(requestCode, resultCode, data)
                         true
                     }
                     result.success(true)
+                } catch (e: Exception) {
+                    result.success(false)
                 }
-                result.success(false)
             }
             "getDeviceId" -> {
                 val deviceId = FortSdk.getDeviceId(binding.activity)
@@ -55,7 +54,7 @@ class AmazonPayfortPlugin : FlutterPlugin,
                 val signature =
                     shaType?.let {
                         concatenatedString?.let { it1 ->
-                            service?.createSignature(it,
+                            service.createSignature(it,
                                 it1)
                         }
                     }
@@ -63,14 +62,9 @@ class AmazonPayfortPlugin : FlutterPlugin,
             }
             "callPayFort" -> {
                 fortRequest.requestMap = createRequestMap(call)
-                service?.callPayFort(
+                service.callPayFort(
                     binding.activity,
-                    fortRequest,
-                    object : PayFortService.PayFortResultHandler {
-                        override fun onResult(fortResult: MutableMap<String, Any>?) {
-                            result.success(fortResult)
-                        }
-                    }
+                    fortRequest
                 )
             }
             else -> {
@@ -85,7 +79,7 @@ class AmazonPayfortPlugin : FlutterPlugin,
 
     private fun createRequestMap(call: MethodCall): MutableMap<String, Any?> {
         val requestMap: MutableMap<String, Any?> = HashMap()
-        requestMap["command"] = call.argument<String>("command")
+        requestMap["command"] = "PURCHASE"
         requestMap["customer_name"] = call.argument<String>("customer_name")
         requestMap["customer_email"] = call.argument<String>("customer_email")
         requestMap["currency"] = call.argument<String>("currency")

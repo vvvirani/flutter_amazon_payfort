@@ -33,10 +33,15 @@ abstract class AmazonPayfortPlatform extends PlatformInterface {
     required String concatenatedString,
   });
 
-  Future<PayFortResult> callPayFort(FortRequest request);
+  Future<void> callPayFort({
+    required FortRequest request,
+    required PayFortResultCallback callback,
+  });
 
-  Future<PayFortResult> callPayFortForApplePay({
+  Future<void> callPayFortForApplePay({
     required FortRequest request,
     required String applePayMerchantId,
+    required String countryIsoCode,
+    required ApplePayResultCallback callback,
   });
 }

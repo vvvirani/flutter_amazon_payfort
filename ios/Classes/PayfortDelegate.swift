@@ -9,12 +9,15 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     
     private var options: PayFortOptions? = nil
     
+    private var channel: FlutterMethodChannel? = nil
+    
     private var requestData : Dictionary<String, Any>?
     private var viewController : UIViewController?
-    var responseDelegate: ApplePayResponseDelegateProtocol? = nil
     
-    func initialize(options : PayFortOptions){
+   
+    func initialize(options: PayFortOptions, channel: FlutterMethodChannel){
         self.options = options
+        self.channel = channel
         let environment = getEnvironment(environment: self.options?.environment)
         payFort = PayFortController.init(enviroment: environment)
     }
@@ -30,10 +33,10 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         }
     }
     
-    public func callPayFort(requestData : Dictionary<String, Any>, viewController : UIViewController, result : @escaping ([String : Any]) -> Void){
+    public func callPayFort(requestData : Dictionary<String, Any>, viewController : UIViewController){
         
         var request = [String : String]()
-        request["command"] = (requestData["command"] as? String) ?? "";
+        request["command"] = "PURCHASE";
         request["customer_name"] = (requestData["customer_name"] as? String) ?? "";
         request["customer_email"] = (requestData["customer_email"] as? String) ?? "";
         request["currency"] = (requestData["currency"] as? String) ?? "";
@@ -57,32 +60,24 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             currentViewController: viewController,
             success: { requestDic, responeDic in
                 
-                print("Success : - \(requestDic) - \(responeDic)")
-                
-                var response = [String : Any]()
-                response["response_status"] = 0
-                responeDic.forEach { (key, value) in response[key] = value }
-                return result(response)
+                print("succeeded: - \(requestDic) - \(responeDic)")
+                self.channel?.invokeMethod("succeeded", arguments: responeDic)
+                return
                 
             },
             canceled: { requestDic, responeDic in
                 
-                print("Canceled : - \(requestDic) -  \(responeDic)")
-                
-                var response = [String : Any]()
-                response["response_status"] = 2
-                responeDic.forEach { (key, value) in response[key] = value }
-                return result(response)
+                print("cancelled: - \(requestDic) -  \(responeDic)")
+                self.channel?.invokeMethod("cancelled", arguments: nil)
+                return
                 
             },
             faild: { requestDic, responeDic, message in
                 
-                print("Faild : \(message) - \(requestDic) - \(responeDic)")
+                print("failed: \(message) - \(requestDic) - \(responeDic)")
+                self.channel?.invokeMethod("failed", arguments: ["message": message])
+                return
                 
-                var response = [String : Any]()
-                response["response_status"] = 1
-                responeDic.forEach { (key, value) in response[key] = value }
-                return result(response)
             }
         )
     }
@@ -92,16 +87,18 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         self.requestData = requestData
         self.viewController = viewController
         
+        let amount = decimal(with: (requestData["amount"] as? String) ?? "0.0")
+        
         let paymentRequest = PKPaymentRequest()
-        paymentRequest.merchantIdentifier = (requestData["applePayMerchantId"] as? String) ?? "";
+        paymentRequest.merchantIdentifier = (requestData["apple_pay_merchant_id"] as? String) ?? "";
         if #available(iOS 12.1.1, *) {
             paymentRequest.supportedNetworks = [.visa, .masterCard, .mada, .amex]
         } else {
             paymentRequest.supportedNetworks = [.visa, .masterCard, .amex]
         };
         paymentRequest.merchantCapabilities = .capability3DS;
-        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: decimal(with: (requestData["amount"] as? String) ?? "0.0"))]
-        paymentRequest.countryCode = "SA";
+        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: amount)]
+        paymentRequest.countryCode = (requestData["country_code"] as? String) ?? "";
         paymentRequest.currencyCode = (requestData["currency"] as? String) ?? "";
         
         let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest)
@@ -114,13 +111,15 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         
         let asyncSuccessful = payment.token.paymentData.count != 0
         
+        let amount = (Double((requestData?["amount"] as? String) ?? "0.0") ?? 0.0) * 100
+        
         if asyncSuccessful {
             
             var request = [String : String]()
             request["digital_wallet"] = "APPLE_PAY"
-            request["command"] = (requestData?["command"] as? String) ?? "";
+            request["command"] = "PURCHASE";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
-            request["amount"] = (requestData?["amount"] as? String) ?? "";
+            request["amount"] = String(amount);
             request["currency"] = (requestData?["currency"] as? String) ?? "";
             request["language"] = (requestData?["language"] as? String) ?? "";
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
@@ -142,31 +141,27 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
                 applePayPayment: payment,
                 currentViewController: viewController ?? UIViewController(),
                 success: { requestDic, responeDic in
-                    print("Success : - \(requestDic) - \(responeDic)")
                     
-                    var response = [String : Any]()
-                    response["response_status"] = 0
-                    responeDic.forEach { (key, value) in response[key] = value }
-                    self.responseDelegate?.onApplePayPaymentResponse(response: response)
+                    print("succeeded: - \(requestDic) - \(responeDic)")
+                    self.channel?.invokeMethod("apple_pay_succeeded", arguments: responeDic)
                     controller.dismiss(animated: true)
+                    return
+                    
                 },
                 faild: { requestDic, responeDic, message in
-                    print("Faild : \(message) - \(requestDic) - \(responeDic)")
                     
-                    var response = [String : Any]()
-                    response["response_status"] = 1
-                    responeDic.forEach { (key, value) in response[key] = value }
-                    self.responseDelegate?.onApplePayPaymentResponse(response: response)
+                    print("failed: \(message) - \(requestDic) - \(responeDic)")
+                    self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": message])
                     controller.dismiss(animated: true)
+                    return
+                    
                 })
         } else {
-            print("asyncSuccessful: \(asyncSuccessful)")
             
-            var response = [String : Any]()
-            response["response_status"] = 1
-            response["response_message"] = "Something went wrong"
-            self.responseDelegate?.onApplePayPaymentResponse(response: response)
+            print("asyncSuccessful: \(asyncSuccessful)")
+            self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
             controller.dismiss(animated: true)
+            
         }
         
     }
@@ -205,13 +200,10 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     private func decimal(with string: String) -> NSDecimalNumber {
         let formatter = NumberFormatter()
         formatter.generatesDecimalNumbers = true
-        return formatter.number(from: string) as? NSDecimalNumber ?? 0
+        let amount = formatter.number(from: string) as? NSDecimalNumber ?? 0
+        return amount;
     }
     
-}
-
-protocol ApplePayResponseDelegateProtocol {
-    func onApplePayPaymentResponse(response: [String : Any])
 }
 
 

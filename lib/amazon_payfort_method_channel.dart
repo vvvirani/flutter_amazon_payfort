@@ -1,5 +1,5 @@
 import 'package:amazon_payfort/amazon_payfort.dart';
-import 'package:amazon_payfort/src/local_platform.dart';
+import 'package:amazon_payfort/src/helpers/local_platform.dart';
 import 'package:flutter/services.dart';
 
 import 'amazon_payfort_platform_interface.dart';
@@ -7,16 +7,21 @@ import 'amazon_payfort_platform_interface.dart';
 /// An implementation of [AmazonPayfortPlatform] that uses method channels.
 class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
   /// The method channel used to interact with the native platform.
-  final methodChannel = const MethodChannel('vvvirani/amazon_payfort');
+  final methodChannel = const MethodChannel('vvvirani/amazon_payfort')
+    ..setMethodCallHandler(_nativeCallHandler);
 
   final LocalPlatform _platform = LocalPlatform();
 
+  static PayFortResultCallback? _payFortResultCallback;
+
+  static ApplePayResultCallback? _applePayResultCallback;
+
   @override
   Future<bool> initialize(PayFortOptions options) async {
-    var arguments = _platform.isAndroid
+    Map<String, dynamic> arguments = _platform.isAndroid
         ? options.payFortAndroidOptions()
         : options.payFortIosOptions();
-    return (await methodChannel.invokeMethod<bool>('initialize', arguments)) ??
+    return (await methodChannel.invokeMethod<bool?>('initialize', arguments)) ??
         false;
   }
 
@@ -41,28 +46,85 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
   }
 
   @override
-  Future<PayFortResult> callPayFort(FortRequest request) {
-    var arguments = request.toFortRequest();
-    return methodChannel.invokeMethod('callPayFort', arguments).then((result) {
-      return PayFortResult.fromMap(Map<String, dynamic>.from(result));
-    });
+  Future<void> callPayFort({
+    required FortRequest request,
+    required PayFortResultCallback callback,
+  }) {
+    _payFortResultCallback = callback;
+    Map<String, dynamic> arguments = request.toJson();
+    return methodChannel.invokeMethod('callPayFort', arguments);
   }
 
   @override
-  Future<PayFortResult> callPayFortForApplePay({
+  Future<void> callPayFortForApplePay({
     required FortRequest request,
     required String applePayMerchantId,
+    required String countryIsoCode,
+    required ApplePayResultCallback callback,
   }) {
     if (_platform.isIOS) {
-      var arguments = request.toFortRequest();
-      arguments.putIfAbsent('applePayMerchantId', () => applePayMerchantId);
-      return methodChannel
-          .invokeMethod('callPayFortForApplePay', arguments)
-          .then((result) {
-        return PayFortResult.fromMap(Map<String, dynamic>.from(result));
-      });
+      _applePayResultCallback = callback;
+      Map<String, dynamic> arguments = request.toJson();
+      arguments.putIfAbsent('apple_pay_merchant_id', () => applePayMerchantId);
+      arguments.putIfAbsent('country_code', () => countryIsoCode);
+      return methodChannel.invokeMethod('callPayFortForApplePay', arguments);
     } else {
       throw Exception('Apple Pay is not supported on this device');
     }
   }
+
+  static Future<dynamic> _nativeCallHandler(MethodCall call) async {
+    try {
+      switch (call.method) {
+        case _MethodType.succeeded:
+          if (_payFortResultCallback != null) {
+            PayFortResult result = PayFortResult.fromJson(
+                Map<String, dynamic>.from(call.arguments));
+            _applePayResultCallback?.onSucceeded(result);
+          }
+          break;
+        case _MethodType.failed:
+          if (_payFortResultCallback != null) {
+            _payFortResultCallback?.onFailed(call.arguments['message']);
+          }
+          break;
+        case _MethodType.cancelled:
+          if (_payFortResultCallback != null) {
+            _payFortResultCallback?.onCancelled();
+          }
+          break;
+        case _MethodType.applePaySucceeded:
+          if (_applePayResultCallback != null) {
+            PayFortResult result = PayFortResult.fromJson(
+                Map<String, dynamic>.from(call.arguments));
+            _applePayResultCallback?.onSucceeded(result);
+          }
+          break;
+        case _MethodType.applePayFailed:
+          if (_applePayResultCallback != null) {
+            _applePayResultCallback?.onFailed(call.arguments['message']);
+          }
+          break;
+        default:
+          throw Exception('unknown method called from native');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+    return false;
+  }
+}
+
+class _MethodType {
+  _MethodType._();
+
+  static const String succeeded = 'succeeded';
+
+  static const String failed = 'failed';
+
+  static const String cancelled = 'cancelled';
+
+  static const String applePaySucceeded = 'apple_pay_succeeded';
+
+  static const String applePayFailed = 'apple_pay_failed';
 }

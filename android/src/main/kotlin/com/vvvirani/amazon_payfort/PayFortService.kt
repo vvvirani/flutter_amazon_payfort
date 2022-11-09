@@ -9,6 +9,7 @@ import com.payfort.fortpaymentsdk.callbacks.FortCallBackManager
 import com.payfort.fortpaymentsdk.callbacks.FortInterfaces
 import com.payfort.fortpaymentsdk.domain.model.FortRequest
 import com.payfort.fortpaymentsdk.exceptions.FortException
+import io.flutter.plugin.common.MethodChannel
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -16,19 +17,19 @@ class PayFortService {
 
     private var options: PayFortOptions? = null
 
+    private var channel: MethodChannel? = null
+
     private var tag = this.javaClass.simpleName
 
     private var fortCallback: FortCallBackManager? = null
 
-    interface PayFortResultHandler {
-        fun onResult(fortResult: MutableMap<String, Any>?)
-    }
 
-    fun initService(options: PayFortOptions) {
+    fun initService(channel: MethodChannel, options: PayFortOptions) {
         if (fortCallback == null) {
             fortCallback = FortCallBackManager.Factory.create()
         }
         this.options = options
+        this.channel = channel
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -38,8 +39,7 @@ class PayFortService {
     fun callPayFort(
         activity: Activity,
         fortRequest: FortRequest,
-        result: PayFortResultHandler,
-    ) {
+        ) {
         fortRequest.isShowResponsePage = options?.isShowResponsePage ?: true
         try {
             FortSdk.getInstance().registerCallback(
@@ -54,8 +54,8 @@ class PayFortService {
                         responeDic: MutableMap<String, Any>?,
                     ) {
                         Log.d(tag, "onSuccess : $requestDic $responeDic")
-                        responeDic?.set("response_status", 0)
-                        result.onResult(responeDic)
+                        channel?.invokeMethod("succeeded", responeDic)
+                        return
                     }
 
                     override fun onFailure(
@@ -63,8 +63,10 @@ class PayFortService {
                         responeDic: MutableMap<String, Any>?,
                     ) {
                         Log.d(tag, "onFailure : $requestDic $responeDic")
-                        responeDic?.set("response_status", 2)
-                        result.onResult(responeDic)
+                        val result: MutableMap<String, Any?> = HashMap()
+                        result["message"] = responeDic?.get("response_message")
+                        channel?.invokeMethod("failed", result)
+                        return
                     }
 
                     override fun onCancel(
@@ -72,8 +74,8 @@ class PayFortService {
                         responeDic: MutableMap<String, Any>?,
                     ) {
                         Log.d(tag, "onCancel : $requestDic $responeDic")
-                        responeDic?.set("response_status", 1)
-                        result.onResult(responeDic)
+                        channel?.invokeMethod("cancelled", null)
+                        return
                     }
                 },
             )
