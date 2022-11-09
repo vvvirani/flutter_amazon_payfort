@@ -111,13 +111,15 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         
         let asyncSuccessful = payment.token.paymentData.count != 0
         
+        let amount = (Double((requestData?["amount"] as? String) ?? "0.0") ?? 0.0) * 100
+        
         if asyncSuccessful {
             
             var request = [String : String]()
             request["digital_wallet"] = "APPLE_PAY"
             request["command"] = "PURCHASE";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
-            request["amount"] = requestData?["amount"] as? String) ?? "0";
+            request["amount"] = String(amount.rounded());
             request["currency"] = (requestData?["currency"] as? String) ?? "";
             request["language"] = (requestData?["language"] as? String) ?? "";
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
