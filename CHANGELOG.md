@@ -1,3 +1,9 @@
+## 0.0.6
+
+* Fix initialization issue
+* Fix apple pay amount issue
+* add `success`, `fail`, `cancel` callbacks
+
 ## 0.0.5
 
 * Add Mada and Amex card support for Apple Pay

@@ -8,7 +8,7 @@ part of 'fort_request.dart';
 
 _$_FortRequest _$$_FortRequestFromJson(Map<String, dynamic> json) =>
     _$_FortRequest(
-      amount: json['amount'] as num,
+      amount: const NumOrStringConverter().fromJson(json['amount'] as String),
       customerName: json['customer_name'] as String,
       customerEmail: json['customer_email'] as String,
       orderDescription: json['order_description'] as String,
@@ -25,7 +25,7 @@ _$_FortRequest _$$_FortRequestFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$_FortRequestToJson(_$_FortRequest instance) =>
     <String, dynamic>{
-      'amount': instance.amount,
+      'amount': const NumOrStringConverter().toJson(instance.amount),
       'customer_name': instance.customerName,
       'customer_email': instance.customerEmail,
       'order_description': instance.orderDescription,

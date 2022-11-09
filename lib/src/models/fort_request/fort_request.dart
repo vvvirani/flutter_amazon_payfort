@@ -12,7 +12,7 @@ class FortRequest with _$FortRequest {
     /// The transaction’s amount.
     /// Each currency has predefined allowed decimal points that should be taken into consideration when sending the amount.
     ///
-    @StringOrNumConverter() required num amount,
+    @NumOrStringConverter() required num amount,
 
     /// The customer’s name.
     ///

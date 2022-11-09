@@ -9,17 +9,15 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     
     private var options: PayFortOptions? = nil
     
-    private var methodChannel: FlutterMethodChannel? = nil
+    private var channel: FlutterMethodChannel? = nil
     
     private var requestData : Dictionary<String, Any>?
     private var viewController : UIViewController?
     
-    func setFlutterMethodChannel(channel: FlutterMethodChannel){
-        self.methodChannel = channel
-    }
-    
-    func initialize(options: PayFortOptions){
+   
+    func initialize(options: PayFortOptions, channel: FlutterMethodChannel){
         self.options = options
+        self.channel = channel
         let environment = getEnvironment(environment: self.options?.environment)
         payFort = PayFortController.init(enviroment: environment)
     }
@@ -63,18 +61,22 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             success: { requestDic, responeDic in
                 
                 print("succeeded: - \(requestDic) - \(responeDic)")
-                self.methodChannel?.invokeMethod("succeeded", arguments: responeDic)
+                self.channel?.invokeMethod("succeeded", arguments: responeDic)
+                return
+                
             },
             canceled: { requestDic, responeDic in
                 
                 print("cancelled: - \(requestDic) -  \(responeDic)")
-                self.methodChannel?.invokeMethod("cancelled", arguments: nil)
+                self.channel?.invokeMethod("cancelled", arguments: nil)
+                return
                 
             },
             faild: { requestDic, responeDic, message in
                 
                 print("failed: \(message) - \(requestDic) - \(responeDic)")
-                self.methodChannel?.invokeMethod("failed", arguments: ["message": message])
+                self.channel?.invokeMethod("failed", arguments: ["message": message])
+                return
                 
             }
         )
@@ -85,16 +87,18 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         self.requestData = requestData
         self.viewController = viewController
         
+        let amount = decimal(with: (requestData["amount"] as? String) ?? "0.0")
+        
         let paymentRequest = PKPaymentRequest()
-        paymentRequest.merchantIdentifier = (requestData["applePayMerchantId"] as? String) ?? "";
+        paymentRequest.merchantIdentifier = (requestData["apple_pay_merchant_id"] as? String) ?? "";
         if #available(iOS 12.1.1, *) {
             paymentRequest.supportedNetworks = [.visa, .masterCard, .mada, .amex]
         } else {
             paymentRequest.supportedNetworks = [.visa, .masterCard, .amex]
         };
         paymentRequest.merchantCapabilities = .capability3DS;
-        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: decimal(with: (requestData["amount"] as? String) ?? "0.0"))]
-        paymentRequest.countryCode = "SA";
+        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: amount)]
+        paymentRequest.countryCode = (requestData["country_code"] as? String) ?? "";
         paymentRequest.currencyCode = (requestData["currency"] as? String) ?? "";
         
         let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest)
@@ -107,13 +111,15 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         
         let asyncSuccessful = payment.token.paymentData.count != 0
         
+        let amount = (Double((requestData?["amount"] as? String) ?? "0.0") ?? 0.0) * 100
+        
         if asyncSuccessful {
             
             var request = [String : String]()
             request["digital_wallet"] = "APPLE_PAY"
             request["command"] = "PURCHASE";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
-            request["amount"] = (requestData?["amount"] as? String) ?? "";
+            request["amount"] = String(amount);
             request["currency"] = (requestData?["currency"] as? String) ?? "";
             request["language"] = (requestData?["language"] as? String) ?? "";
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
@@ -137,21 +143,23 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
                 success: { requestDic, responeDic in
                     
                     print("succeeded: - \(requestDic) - \(responeDic)")
-                    self.methodChannel?.invokeMethod("apple_pay_succeeded", arguments: responeDic)
+                    self.channel?.invokeMethod("apple_pay_succeeded", arguments: responeDic)
                     controller.dismiss(animated: true)
+                    return
                     
                 },
                 faild: { requestDic, responeDic, message in
                     
                     print("failed: \(message) - \(requestDic) - \(responeDic)")
-                    self.methodChannel?.invokeMethod("apple_pay_failed", arguments: ["message": message])
+                    self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": message])
                     controller.dismiss(animated: true)
+                    return
                     
                 })
         } else {
             
             print("asyncSuccessful: \(asyncSuccessful)")
-            self.methodChannel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
+            self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
             controller.dismiss(animated: true)
             
         }
@@ -192,7 +200,8 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     private func decimal(with string: String) -> NSDecimalNumber {
         let formatter = NumberFormatter()
         formatter.generatesDecimalNumbers = true
-        return formatter.number(from: string) as? NSDecimalNumber ?? 0
+        let amount = formatter.number(from: string) as? NSDecimalNumber ?? 0
+        return amount;
     }
     
 }

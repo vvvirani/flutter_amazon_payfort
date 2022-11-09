@@ -4,6 +4,7 @@ import 'package:amazon_payfort_example/constants/fort_constants.dart';
 import 'package:amazon_payfort_example/models/sdk_token_response.dart';
 import 'package:amazon_payfort_example/providers/default_change_notifier.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class PaymentProvider extends DefaultChangeNotifier {
   final AmazonPayfort _payfort = AmazonPayfort.instance;
@@ -32,16 +33,18 @@ class PaymentProvider extends DefaultChangeNotifier {
         customerEmail: 'test@customer.com',
         orderDescription: 'Test Order',
         sdkToken: sdkTokenResponse?.sdkToken ?? '',
-        merchantReference: 'Order ${DateTime.now().millisecondsSinceEpoch}',
+        merchantReference: const Uuid().v4(),
         currency: 'SAR',
         customerIp: (await _info.getWifiIP() ?? ''),
       );
 
       _payfort.callPayFort(
         request: request,
-        onSucceeded: onSucceeded,
-        onFailed: onFailed,
-        onCancelled: onCancelled,
+        callBack: PayFortResultCallback(
+          onSucceeded: onSucceeded,
+          onFailed: onFailed,
+          onCancelled: onCancelled,
+        ),
       );
     } catch (e) {
       onFailed(e.toString());
@@ -49,29 +52,32 @@ class PaymentProvider extends DefaultChangeNotifier {
   }
 
   Future<void> paymentWithApplePay({
-    required ApplePaySucceededCallback onSucceeded,
-    required ApplePayFailedCallback onFailed,
+    required SucceededCallback onSucceeded,
+    required FailedCallback onFailed,
   }) async {
     try {
       var sdkTokenResponse = await _generateSdkToken(isApplePay: true);
 
-      /// Step 4: Processing Payment
+      /// Step 4: Processing Payment [Don't multiply with 100]
       FortRequest request = FortRequest(
-        amount: 10,
+        amount: 1000,
         customerName: 'Test Customer',
         customerEmail: 'test@customer.com',
         orderDescription: 'Test Order',
         sdkToken: sdkTokenResponse?.sdkToken ?? '',
-        merchantReference: 'Order ${DateTime.now().millisecondsSinceEpoch}',
+        merchantReference: const Uuid().v4(),
         currency: 'SAR',
         customerIp: (await _info.getWifiIP() ?? ''),
       );
 
       _payfort.callPayFortForApplePay(
         request: request,
+        countryIsoCode: 'SA',
         applePayMerchantId: FortConstants.applePayMerchantId,
-        onSucceeded: onSucceeded,
-        onFailed: onFailed,
+        callback: ApplePayResultCallback(
+          onSucceeded: onSucceeded,
+          onFailed: onFailed,
+        ),
       );
     } catch (e) {
       onFailed(e.toString());

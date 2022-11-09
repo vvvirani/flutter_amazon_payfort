@@ -23,7 +23,7 @@ mixin _$FortRequest {
   /// The transaction’s amount.
   /// Each currency has predefined allowed decimal points that should be taken into consideration when sending the amount.
   ///
-  @StringOrNumConverter()
+  @NumOrStringConverter()
   num get amount => throw _privateConstructorUsedError;
 
   /// The customer’s name.
@@ -100,7 +100,7 @@ abstract class $FortRequestCopyWith<$Res> {
       _$FortRequestCopyWithImpl<$Res, FortRequest>;
   @useResult
   $Res call(
-      {@StringOrNumConverter() num amount,
+      {@NumOrStringConverter() num amount,
       @JsonKey(name: 'customer_name') String customerName,
       @JsonKey(name: 'customer_email') String customerEmail,
       @JsonKey(name: 'order_description') String orderDescription,
@@ -208,7 +208,7 @@ abstract class _$$_FortRequestCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@StringOrNumConverter() num amount,
+      {@NumOrStringConverter() num amount,
       @JsonKey(name: 'customer_name') String customerName,
       @JsonKey(name: 'customer_email') String customerEmail,
       @JsonKey(name: 'order_description') String orderDescription,
@@ -309,7 +309,7 @@ class __$$_FortRequestCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_FortRequest extends _FortRequest {
   const _$_FortRequest(
-      {@StringOrNumConverter() required this.amount,
+      {@NumOrStringConverter() required this.amount,
       @JsonKey(name: 'customer_name') required this.customerName,
       @JsonKey(name: 'customer_email') required this.customerEmail,
       @JsonKey(name: 'order_description') required this.orderDescription,
@@ -331,7 +331,7 @@ class _$_FortRequest extends _FortRequest {
   /// Each currency has predefined allowed decimal points that should be taken into consideration when sending the amount.
   ///
   @override
-  @StringOrNumConverter()
+  @NumOrStringConverter()
   final num amount;
 
   /// The customer’s name.
@@ -479,7 +479,7 @@ class _$_FortRequest extends _FortRequest {
 
 abstract class _FortRequest extends FortRequest {
   const factory _FortRequest(
-      {@StringOrNumConverter()
+      {@NumOrStringConverter()
           required final num amount,
       @JsonKey(name: 'customer_name')
           required final String customerName,
@@ -512,7 +512,7 @@ abstract class _FortRequest extends FortRequest {
   /// The transaction’s amount.
   /// Each currency has predefined allowed decimal points that should be taken into consideration when sending the amount.
   ///
-  @StringOrNumConverter()
+  @NumOrStringConverter()
   num get amount;
   @override
 

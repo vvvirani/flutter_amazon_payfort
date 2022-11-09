@@ -3,7 +3,9 @@ import UIKit
 
 public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin {
     
-    public static var fortDelegate = PayFortDelegate()
+    public var delegate = PayFortDelegate()
+    
+    private static var channel:  FlutterMethodChannel? = nil
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         
@@ -11,22 +13,19 @@ public class SwiftAmazonPayfortPlugin: NSObject, FlutterPlugin {
         
         let instance = SwiftAmazonPayfortPlugin()
         
-        fortDelegate.setFlutterMethodChannel(channel: channel)
-        
         registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        self.channel = channel
         
     }
     
-    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        
-        let delegate = SwiftAmazonPayfortPlugin.fortDelegate
         
         if call.method == "initialize" {
             
             if let arguments = call.arguments as? Dictionary<String, Any>{
                 let options = processPayFortOptions(arguments: arguments)
-                delegate.initialize(options: options)
+                delegate.initialize(options: options, channel: SwiftAmazonPayfortPlugin.channel!)
                 result(true)
             }
             result(false)

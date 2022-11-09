@@ -1,11 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-class StringOrNumConverter extends JsonConverter<String, num> {
-  const StringOrNumConverter();
+class NumOrStringConverter extends JsonConverter<num, String> {
+  const NumOrStringConverter();
 
   @override
-  String fromJson(num json) => json.toString();
+  num fromJson(String json) => num.parse(json);
 
   @override
-  num toJson(String object) => num.parse(object);
+  String toJson(num object) => object.toString();
 }

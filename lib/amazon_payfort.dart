@@ -1,24 +1,12 @@
 import 'package:amazon_payfort/amazon_payfort_platform_interface.dart';
+import 'package:amazon_payfort/src/helpers/call_backs.dart';
 import 'package:amazon_payfort/src/models/fort_request/fort_request.dart';
-import 'package:amazon_payfort/src/models/pay_fort_result/pay_fort_result.dart';
 import 'package:amazon_payfort/src/models/pay_fort_options/pay_fort_options.dart';
 import 'package:flutter/services.dart';
 
 export 'src/enums/fort_environment.dart';
-
 export 'src/models/models.dart';
-
-export 'src/models/pay_fort_result/pay_fort_result.dart';
-
-typedef SucceededCallback = void Function(PayFortResult result);
-
-typedef FailedCallback = void Function(String message);
-
-typedef CancelledCallback = void Function();
-
-typedef ApplePaySucceededCallback = void Function(PayFortResult result);
-
-typedef ApplePayFailedCallback = void Function(String message);
+export 'src/helpers/call_backs.dart';
 
 /// Amazon Payment Services is the new name for PayFort.
 /// PayFort is a leading provider of payment processing services that was acquired by Amazon in 2017.
@@ -82,17 +70,10 @@ class AmazonPayfort {
   ///
   Future<void> callPayFort({
     required FortRequest request,
-    required SucceededCallback onSucceeded,
-    required FailedCallback onFailed,
-    required CancelledCallback onCancelled,
+    required PayFortResultCallback callBack,
   }) async {
     if (_isInitialize) {
-      return await _platform.callPayFort(
-        request: request,
-        onSucceededCallback: onSucceeded,
-        onFailedCallback: onFailed,
-        onCancelledCallback: onCancelled,
-      );
+      return await _platform.callPayFort(request: request, callback: callBack);
     } else {
       throw _payFortInitializeException();
     }
@@ -100,18 +81,18 @@ class AmazonPayfort {
 
   ///  Apple Pay is a digital wallet that allows your customers to
   /// make payments using different Apple devices via the Amazon Payment Services iOS SDK.
-  Future<PayFortResult> callPayFortForApplePay({
+  Future<void> callPayFortForApplePay({
     required FortRequest request,
+    required String countryIsoCode,
     required String applePayMerchantId,
-    required ApplePaySucceededCallback onSucceeded,
-    required ApplePayFailedCallback onFailed,
+    required ApplePayResultCallback callback,
   }) async {
     if (_isInitialize) {
       return await _platform.callPayFortForApplePay(
         request: request,
+        countryIsoCode: countryIsoCode,
         applePayMerchantId: applePayMerchantId,
-        applePaySucceededCallback: onSucceeded,
-        applePayFailedCallback: onFailed,
+        callback: callback,
       );
     } else {
       throw _payFortInitializeException();

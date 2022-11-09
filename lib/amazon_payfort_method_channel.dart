@@ -1,5 +1,5 @@
 import 'package:amazon_payfort/amazon_payfort.dart';
-import 'package:amazon_payfort/src/local_platform.dart';
+import 'package:amazon_payfort/src/helpers/local_platform.dart';
 import 'package:flutter/services.dart';
 
 import 'amazon_payfort_platform_interface.dart';
@@ -12,22 +12,16 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
 
   final LocalPlatform _platform = LocalPlatform();
 
-  static SucceededCallback? _succeededCallback;
+  static PayFortResultCallback? _payFortResultCallback;
 
-  static FailedCallback? _failedCallback;
-
-  static CancelledCallback? _cancelledCallback;
-
-  static ApplePaySucceededCallback? _applePaySucceededCallback;
-
-  static ApplePayFailedCallback? _applePayFailedCallback;
+  static ApplePayResultCallback? _applePayResultCallback;
 
   @override
   Future<bool> initialize(PayFortOptions options) async {
     Map<String, dynamic> arguments = _platform.isAndroid
         ? options.payFortAndroidOptions()
         : options.payFortIosOptions();
-    return (await methodChannel.invokeMethod<bool>('initialize', arguments)) ??
+    return (await methodChannel.invokeMethod<bool?>('initialize', arguments)) ??
         false;
   }
 
@@ -54,34 +48,26 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
   @override
   Future<void> callPayFort({
     required FortRequest request,
-    required SucceededCallback onSucceededCallback,
-    required FailedCallback onFailedCallback,
-    required CancelledCallback onCancelledCallback,
+    required PayFortResultCallback callback,
   }) {
-    _succeededCallback = onSucceededCallback;
-    _failedCallback = onFailedCallback;
-    _cancelledCallback = onCancelledCallback;
+    _payFortResultCallback = callback;
     Map<String, dynamic> arguments = request.toJson();
     return methodChannel.invokeMethod('callPayFort', arguments);
   }
 
   @override
-  Future<PayFortResult> callPayFortForApplePay({
+  Future<void> callPayFortForApplePay({
     required FortRequest request,
     required String applePayMerchantId,
-    required ApplePaySucceededCallback applePaySucceededCallback,
-    required ApplePayFailedCallback applePayFailedCallback,
+    required String countryIsoCode,
+    required ApplePayResultCallback callback,
   }) {
     if (_platform.isIOS) {
-      _applePaySucceededCallback = applePaySucceededCallback;
-      _applePayFailedCallback = applePayFailedCallback;
+      _applePayResultCallback = callback;
       Map<String, dynamic> arguments = request.toJson();
-      arguments.putIfAbsent('applePayMerchantId', () => applePayMerchantId);
-      return methodChannel
-          .invokeMethod('callPayFortForApplePay', arguments)
-          .then((result) {
-        return PayFortResult.fromJson(Map<String, dynamic>.from(result));
-      });
+      arguments.putIfAbsent('apple_pay_merchant_id', () => applePayMerchantId);
+      arguments.putIfAbsent('country_code', () => countryIsoCode);
+      return methodChannel.invokeMethod('callPayFortForApplePay', arguments);
     } else {
       throw Exception('Apple Pay is not supported on this device');
     }
@@ -91,32 +77,32 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
     try {
       switch (call.method) {
         case _MethodType.succeeded:
-          if (_succeededCallback != null) {
+          if (_payFortResultCallback != null) {
             PayFortResult result = PayFortResult.fromJson(
                 Map<String, dynamic>.from(call.arguments));
-            _succeededCallback!(result);
+            _applePayResultCallback?.onSucceeded(result);
           }
           break;
         case _MethodType.failed:
-          if (_failedCallback != null) {
-            _failedCallback!(call.arguments['message']);
+          if (_payFortResultCallback != null) {
+            _payFortResultCallback?.onFailed(call.arguments['message']);
           }
           break;
         case _MethodType.cancelled:
-          if (_cancelledCallback != null) {
-            _cancelledCallback!();
+          if (_payFortResultCallback != null) {
+            _payFortResultCallback?.onCancelled();
           }
           break;
         case _MethodType.applePaySucceeded:
-          if (_applePaySucceededCallback != null) {
+          if (_applePayResultCallback != null) {
             PayFortResult result = PayFortResult.fromJson(
                 Map<String, dynamic>.from(call.arguments));
-            _applePaySucceededCallback!(result);
+            _applePayResultCallback?.onSucceeded(result);
           }
           break;
         case _MethodType.applePayFailed:
-          if (_applePayFailedCallback != null) {
-            _applePayFailedCallback!(call.arguments['message']);
+          if (_applePayResultCallback != null) {
+            _applePayResultCallback?.onFailed(call.arguments['message']);
           }
           break;
         default:
