@@ -80,7 +80,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
           if (_payFortResultCallback != null) {
             PayFortResult result = PayFortResult.fromJson(
                 Map<String, dynamic>.from(call.arguments));
-            _applePayResultCallback?.onSucceeded(result);
+            _payFortResultCallback?.onSucceeded(result);
           }
           break;
         case _MethodType.failed:
