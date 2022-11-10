@@ -41,7 +41,6 @@ Amazon Payment Services requires to test your integration before going live to v
 
 </table>
 
-
 ## Installation
 
 ```sh
@@ -80,8 +79,8 @@ The library offers several methods to handle stripe related actions:
 ```dart
 Future<String?> getDeviceId(...);
 Future<String?> generateSignature(...);
-Future<PayFortResult> callPayFort(...);
-Future<PayFortResult> callPayFortForApplePay(...);
+Future<void> callPayFort(...);
+Future<void> callPayFortForApplePay(...);
 ```
 
 ## Run the example app

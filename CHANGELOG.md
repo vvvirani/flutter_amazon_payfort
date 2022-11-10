@@ -1,3 +1,7 @@
+## 0.0.8
+
+* Fix the `succeeded` call back issue for card payment
+
 ## 0.0.7
 
 * Improve performance and bug fixes
