@@ -22,23 +22,19 @@ class AmazonPayfortPlugin : FlutterPlugin,
     private var fortRequest = FortRequest()
     private var service: PayFortService = PayFortService()
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger,
             "vvvirani/amazon_payfort")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {
+    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "initialize" -> {
                 try {
                     val options = processPayFortOptions(call)
                     service.initService(channel, options)
-                    binding.addActivityResultListener { requestCode, resultCode, data ->
-                        service.onActivityResult(requestCode, resultCode, data)
-                        true
-                    }
                     result.success(true)
                 } catch (e: Exception) {
                     result.success(false)
@@ -73,7 +69,7 @@ class AmazonPayfortPlugin : FlutterPlugin,
         }
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 

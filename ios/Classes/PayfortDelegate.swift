@@ -136,7 +136,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             payFort?.presentAsDefault = options?.presentAsDefault ?? true
             payFort?.isShowResponsePage = options?.isShowResponsePage ?? true
             
-            print("Request Payfort Get :\(request)")
+            print("Request Payfort :\(request)")
             
             
             payFort?.callPayFortForApplePay(

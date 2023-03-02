@@ -34,7 +34,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   void initState() {
     super.initState();
-    var paymentProvider = context.read<PaymentProvider>();
+    PaymentProvider paymentProvider = context.read<PaymentProvider>();
     paymentProvider.init();
   }
 

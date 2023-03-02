@@ -1,7 +1,6 @@
 package com.vvvirani.amazon_payfort
 
 import android.app.Activity
-import android.content.Intent
 import android.util.Log
 
 import com.payfort.fortpaymentsdk.FortSdk
@@ -30,10 +29,6 @@ class PayFortService {
         }
         this.options = options
         this.channel = channel
-    }
-
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        fortCallback?.onActivityResult(requestCode, resultCode, data)
     }
 
     fun callPayFort(

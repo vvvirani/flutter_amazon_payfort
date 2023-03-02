@@ -1,3 +1,7 @@
+## 0.0.9
+
+* Improve performance and bug fixes
+
 ## 0.0.8
 
 * Fix the `succeeded` call back issue for card payment
@@ -34,5 +38,5 @@
 
 ## 0.0.1
 
-* Initial release.
+* Initial release
 

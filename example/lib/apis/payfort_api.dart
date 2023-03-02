@@ -13,7 +13,7 @@ class PayFortApi {
     var response = await post(
       Uri.parse(FortConstants.environment.paymentApi),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(request.toRequest()),
+      body: jsonEncode(request.asRequest()),
     );
     if (response.statusCode == 200) {
       var decodedResponse = jsonDecode(response.body);

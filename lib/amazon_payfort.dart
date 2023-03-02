@@ -1,12 +1,15 @@
 import 'package:amazon_payfort/amazon_payfort_platform_interface.dart';
 import 'package:amazon_payfort/src/helpers/call_backs.dart';
-import 'package:amazon_payfort/src/models/fort_request/fort_request.dart';
-import 'package:amazon_payfort/src/models/pay_fort_options/pay_fort_options.dart';
-import 'package:flutter/services.dart';
+import 'package:amazon_payfort/src/helpers/exceptions.dart';
+import 'package:amazon_payfort/src/models/fort_request.dart';
+import 'package:amazon_payfort/src/models/pay_fort_options.dart';
 
 export 'src/enums/fort_environment.dart';
+
 export 'src/models/models.dart';
+
 export 'src/helpers/call_backs.dart';
+export 'src/helpers/exceptions.dart';
 
 /// Amazon Payment Services is the new name for PayFort.
 /// PayFort is a leading provider of payment processing services that was acquired by Amazon in 2017.
@@ -42,7 +45,7 @@ class AmazonPayfort {
     if (_isInitialize) {
       return _platform.getDeviceId();
     } else {
-      throw _payFortInitializeException();
+      throw PayFortNotInitialzedException();
     }
   }
 
@@ -60,7 +63,7 @@ class AmazonPayfort {
         concatenatedString: concatenatedString,
       );
     } else {
-      throw _payFortInitializeException();
+      throw PayFortNotInitialzedException();
     }
   }
 
@@ -75,7 +78,7 @@ class AmazonPayfort {
     if (_isInitialize) {
       return await _platform.callPayFort(request: request, callback: callBack);
     } else {
-      throw _payFortInitializeException();
+      throw PayFortNotInitialzedException();
     }
   }
 
@@ -95,15 +98,7 @@ class AmazonPayfort {
         callback: callback,
       );
     } else {
-      throw _payFortInitializeException();
+      throw PayFortNotInitialzedException();
     }
-  }
-
-  PlatformException _payFortInitializeException() {
-    return PlatformException(
-      code: 'NOT_INITIALIZE',
-      message:
-          'Ensure to initialize AmazonPayfort before accessing it.\nPlease execute the initialize method : AmazonPayfort.initialize()',
-    );
   }
 }

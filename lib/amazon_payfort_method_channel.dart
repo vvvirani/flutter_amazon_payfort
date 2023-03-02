@@ -7,10 +7,11 @@ import 'amazon_payfort_platform_interface.dart';
 /// An implementation of [AmazonPayfortPlatform] that uses method channels.
 class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
   /// The method channel used to interact with the native platform.
-  final methodChannel = const MethodChannel('vvvirani/amazon_payfort')
-    ..setMethodCallHandler(_nativeCallHandler);
+  final MethodChannel _methodChannel =
+      const MethodChannel('vvvirani/amazon_payfort')
+        ..setMethodCallHandler(_nativeCallHandler);
 
-  final LocalPlatform _platform = LocalPlatform();
+  final LocalPlatform _platform = LocalPlatform.instance;
 
   static PayFortResultCallback? _payFortResultCallback;
 
@@ -21,14 +22,15 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
     Map<String, dynamic> arguments = _platform.isAndroid
         ? options.payFortAndroidOptions()
         : options.payFortIosOptions();
-    return (await methodChannel.invokeMethod<bool?>('initialize', arguments)) ??
+    return (await _methodChannel.invokeMethod<bool?>(
+            'initialize', arguments)) ??
         false;
   }
 
   @override
   Future<String?> getDeviceId() {
     String method = _platform.isIOS ? 'getUDID' : 'getDeviceId';
-    return methodChannel.invokeMethod<String?>(method);
+    return _methodChannel.invokeMethod<String?>(method);
   }
 
   @override
@@ -36,7 +38,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
     required String shaType,
     required String concatenatedString,
   }) {
-    return methodChannel.invokeMethod<String?>(
+    return _methodChannel.invokeMethod<String?>(
       'generateSignature',
       <String, dynamic>{
         'shaType': shaType,
@@ -51,8 +53,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
     required PayFortResultCallback callback,
   }) {
     _payFortResultCallback = callback;
-    Map<String, dynamic> arguments = request.toJson();
-    return methodChannel.invokeMethod('callPayFort', arguments);
+    return _methodChannel.invokeMethod('callPayFort', request.asMap());
   }
 
   @override
@@ -64,12 +65,13 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
   }) {
     if (_platform.isIOS) {
       _applePayResultCallback = callback;
-      Map<String, dynamic> arguments = request.toJson();
+      Map<String, dynamic> arguments = request.asMap();
       arguments.putIfAbsent('apple_pay_merchant_id', () => applePayMerchantId);
       arguments.putIfAbsent('country_code', () => countryIsoCode);
-      return methodChannel.invokeMethod('callPayFortForApplePay', arguments);
+      return _methodChannel.invokeMethod('callPayFortForApplePay', arguments);
     } else {
-      throw Exception('Apple Pay is not supported on this device');
+      throw DeviceNotSupportedException(
+          'Apple Pay is not supported on this device');
     }
   }
 
@@ -78,7 +80,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
       switch (call.method) {
         case _MethodType.succeeded:
           if (_payFortResultCallback != null) {
-            PayFortResult result = PayFortResult.fromJson(
+            PayFortResult result = PayFortResult.fromMap(
                 Map<String, dynamic>.from(call.arguments));
             _payFortResultCallback?.onSucceeded(result);
           }
@@ -95,7 +97,7 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
           break;
         case _MethodType.applePaySucceeded:
           if (_applePayResultCallback != null) {
-            PayFortResult result = PayFortResult.fromJson(
+            PayFortResult result = PayFortResult.fromMap(
                 Map<String, dynamic>.from(call.arguments));
             _applePayResultCallback?.onSucceeded(result);
           }
