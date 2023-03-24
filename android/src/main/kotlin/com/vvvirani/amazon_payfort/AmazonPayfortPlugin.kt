@@ -1,7 +1,8 @@
 package com.vvvirani.amazon_payfort
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
-import androidx.annotation.NonNull
+import android.content.Intent
 import com.payfort.fortpaymentsdk.FortSdk
 import com.payfort.fortpaymentsdk.domain.model.FortRequest
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -35,6 +36,11 @@ class AmazonPayfortPlugin : FlutterPlugin,
                 try {
                     val options = processPayFortOptions(call)
                     service.initService(channel, options)
+                    binding.addActivityResultListener { requestCode: Int, resultCode: Int, data: Intent? ->
+                        if (requestCode == 1166 && resultCode == RESULT_OK && data != null)
+                            service.onActivityResult(requestCode, resultCode, data)
+                        true
+                    }
                     result.success(true)
                 } catch (e: Exception) {
                     result.success(false)

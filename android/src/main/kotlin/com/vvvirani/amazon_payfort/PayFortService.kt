@@ -1,6 +1,7 @@
 package com.vvvirani.amazon_payfort
 
 import android.app.Activity
+import android.content.Intent
 import android.util.Log
 
 import com.payfort.fortpaymentsdk.FortSdk
@@ -31,10 +32,17 @@ class PayFortService {
         this.channel = channel
     }
 
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (fortCallback != null) {
+            fortCallback?.onActivityResult(requestCode, resultCode, data)
+        }
+
+    }
+
     fun callPayFort(
         activity: Activity,
         fortRequest: FortRequest,
-        ) {
+    ) {
         fortRequest.isShowResponsePage = options?.isShowResponsePage ?: true
         try {
             FortSdk.getInstance().registerCallback(
@@ -91,7 +99,7 @@ class PayFortService {
         }
     }
 
-    fun createSignature(shaType: String, concatenatedString: String): String {
+    fun createSignature(shaType: String, concatenatedString: String): String? {
         try {
             val bytes = concatenatedString.toByteArray()
             val md = MessageDigest.getInstance(shaType)
@@ -100,7 +108,7 @@ class PayFortService {
         } catch (e: NoSuchAlgorithmException) {
             Log.d("Signature Error", e.toString())
         }
-        return ""
+        return null
     }
 
 }
