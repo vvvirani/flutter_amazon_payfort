@@ -1,4 +1,4 @@
-package com.vvvirani.amazon_payfort_example
+package com.vvvirani.example
 
 import io.flutter.embedding.android.FlutterActivity
 
