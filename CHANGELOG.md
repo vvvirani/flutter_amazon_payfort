@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Improve performance and bug fixes
+
 ## 0.0.9
 
 * Updated Packages version
