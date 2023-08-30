@@ -1,7 +1,7 @@
 ## 0.0.9
 
-* Update Packages version
-* Fix the payment issue in release mode from the `ios`, Currenlty working from the `android` side
+* Updated Packages version
+* Fix the payment issue in the release mode from the `ios` side, Currenlty working from the `android` side
 
 ## 0.0.8
 
