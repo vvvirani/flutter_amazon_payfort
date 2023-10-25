@@ -15,6 +15,8 @@ import java.security.NoSuchAlgorithmException
 
 class PayFortService {
 
+     val payfortRequestCode = 1166
+
     private var options: PayFortOptions? = null
 
     private var channel: MethodChannel? = null
@@ -48,7 +50,7 @@ class PayFortService {
             FortSdk.getInstance().registerCallback(
                 activity,
                 fortRequest,
-                getEnvironment(options?.environment), 5,
+                getEnvironment(options?.environment), payfortRequestCode,
                 fortCallback,
                 options?.showLoading ?: true,
                 object : FortInterfaces.OnTnxProcessed {

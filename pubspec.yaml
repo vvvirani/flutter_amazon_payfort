@@ -1,6 +1,6 @@
 name: amazon_payfort
 description: Flutter plugin for Amazon Payment Services (Payfort). It supports both android and iOS.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/vvvirani/flutter_amazon_payfort
 
 environment:
