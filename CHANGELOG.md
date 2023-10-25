@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Fixed payment issue on release mode from `Android` side
+
 ## 1.0.0
 
 * Improve performance and bug fixes
@@ -5,7 +9,7 @@
 ## 0.0.9
 
 * Updated Packages version
-* Fix the payment issue in the release mode from the `ios` side, Currenlty working from the `android` side
+* Fix the payment issue in the release mode from the `iOs` side, Currenlty working from the `Android` side
 
 ## 0.0.8
 
