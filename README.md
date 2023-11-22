@@ -83,6 +83,28 @@ Future<void> callPayFort(...);
 Future<void> callPayFortForApplePay(...);
 ```
 
+## Specify ProGuard rules (Only for Android)
+
+- Open the `build.gradle` file for the module (usually `app`) in which you want to enable ProGuard.
+- Add the following lines to the android block in the `build.gradle` file:
+  ```gradle
+  android {
+    ...
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    ...
+  }
+  ```
+  This snippet enables ProGuard for the release build type.
+- Create a file named `proguard-rules.pro` in the `app` module directory. This file contains the rules for ProGuard
+- Copy rules from below url and paste in your `proguard-rules.pro` file
+
+  ProGuard Rules: [https://github.com/vvvirani/flutter_amazon_payfort/blob/main/android/proguard-rules.pro](https://github.com/vvvirani/flutter_amazon_payfort/blob/main/android/proguard-rules.pro)
+  
 ## Run the example app
 
 - Navigate to the example folder `cd example`
