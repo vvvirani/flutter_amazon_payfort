@@ -115,5 +115,9 @@ Future<void> callPayFortForApplePay(...);
 
 You can help us make this project better, feel free to open an new issue or a pull request.
 
+If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of coffee
 
 <a href="https://www.buymeacoffee.com/vvvirani"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="80"></a>
+
+<a href="https://www.paypal.com/vvvirani"><img src="https://www.edigitalagency.com.au/wp-content/uploads/new-PayPal-Logo-horizontal-full-color-png.png" height="75"></a>
+
