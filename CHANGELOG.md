@@ -1,3 +1,7 @@
+## 1.0.3
+
+* Improve performance and bug fixes
+
 ## 1.0.2
 
 * Solved payment failed issue from `iOS` side(see issue [#13](https://github.com/vvvirani/flutter_amazon_payfort/issues/13)).

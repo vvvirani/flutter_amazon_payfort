@@ -111,6 +111,9 @@ Future<void> callPayFortForApplePay(...);
 - Install the dependencies
   - `flutter pub get`
 
-## Contributing
+## Contributing & Donate
 
 You can help us make this project better, feel free to open an new issue or a pull request.
+
+
+<a href="https://www.buymeacoffee.com/vvvirani"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="80"></a>
