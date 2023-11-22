@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Solved payment failed issue from `iOS` side(see issue [#13](https://github.com/vvvirani/flutter_amazon_payfort/issues/13)).
+
 ## 1.0.1
 
 * Fixed payment issue on release mode from `Android` side
@@ -9,7 +13,7 @@
 ## 0.0.9
 
 * Updated Packages version
-* Fix the payment issue in the release mode from the `iOs` side, Currenlty working from the `Android` side
+* Fix the payment issue in the release mode from the `iOS` side, Currenlty working from the `Android` side
 
 ## 0.0.8
 

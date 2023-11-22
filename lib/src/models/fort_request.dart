@@ -48,7 +48,7 @@ class FortRequest {
   ///
   final String? paymentOption;
 
-  /// The E-commerce indicator. example: [ECOMMERCE]
+  /// The E-commerce indicator. example: [ECOMMERCE].
   ///
   final String? eci;
 

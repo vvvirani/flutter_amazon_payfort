@@ -14,7 +14,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     private var requestData : Dictionary<String, Any>?
     private var viewController : UIViewController?
     
-   
+    
     func initialize(options: PayFortOptions, channel: FlutterMethodChannel){
         self.options = options
         self.channel = channel
@@ -47,7 +47,9 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         request["sdk_token"] = (requestData["sdk_token"] as? String) ?? "";
         request["token_name"] = (requestData["token_name"] as? String) ?? "";
         request["payment_option"] = (requestData["payment_option"] as? String) ?? "";
-        request["eci"] = (requestData["eci"] as? String) ?? "";
+        if (requestData["eci"] != nil) {
+            request["eci"] = (requestData["eci"] as? String) ?? "";
+        }
         request["customer_ip"] = (requestData["customer_ip"] as? String) ?? "";
         request["phone_number"] = (requestData["phone_number"] as? String) ?? "";
         
@@ -125,7 +127,9 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
             request["sdk_token"] = (requestData?["sdk_token"] as? String) ?? "";
             request["payment_option"] = (requestData?["payment_option"] as? String) ?? "";
-            request["eci"] = (requestData?["eci"] as? String) ?? "";
+            if (request["eci"] != nil) {
+                request["eci"] = (request["eci"]) ?? "";
+            }
             request["order_description"] = (requestData?["order_description"] as? String) ?? "";
             request["customer_ip"] = (requestData?["customer_ip"] as? String) ?? "";
             request["customer_name"] = (requestData?["customer_name"] as? String) ?? "";
@@ -142,7 +146,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             payFort?.callPayFortForApplePay(
                 withRequest: request,
                 applePayPayment: payment,
-                currentViewController: viewController ?? UIViewController(),
+                currentViewController: viewController!,
                 success: { requestDic, responeDic in
                     
                     print("succeeded: - \(requestDic) - \(responeDic)")
@@ -164,7 +168,6 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             print("asyncSuccessful: \(asyncSuccessful)")
             self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
             controller.dismiss(animated: true)
-            
         }
         
     }
@@ -217,4 +220,4 @@ extension Double {
         return Int(exactly: roundedValue)
     }
 }
-    
+
