@@ -100,8 +100,8 @@ Future<void> callPayFortForApplePay(...);
   }
   ```
   This snippet enables ProGuard for the release build type.
-- Create a file named `proguard-rules.pro` in the `app` module directory. This file contains the rules for ProGuard
-- Copy rules from below url and paste in your `proguard-rules.pro` file
+- Create a file named `proguard-rules.pro` in the `app` module directory. This file contains the rules for ProGuard.
+- Copy rules from below url and paste in your `proguard-rules.pro` file.
 
   ProGuard Rules: [https://github.com/vvvirani/flutter_amazon_payfort/blob/main/android/proguard-rules.pro](https://github.com/vvvirani/flutter_amazon_payfort/blob/main/android/proguard-rules.pro)
   
