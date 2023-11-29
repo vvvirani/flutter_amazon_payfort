@@ -60,11 +60,14 @@ This plugin requires several changes to be able to work on Android devices. Plea
 
 Compatible with apps targeting iOS 12 or above.
 
-To upgrade your iOS deployment target to 12.0, you can either do so in Xcode under your Build Settings, or by modifying IPHONEOS_DEPLOYMENT_TARGET in your project.pbxproj directly.
+To upgrade your iOS deployment target to `12.0`, you can either do so in Xcode under your Build Settings, or by modifying `IPHONEOS_DEPLOYMENT_TARGET` in your project.pbxproj directly.
 
 You will also need to update in your Podfile:
 
-`platform :ios, '12.0'`
+```ruby
+platform :ios, '12.0'
+```
+
 
 ## Payfort initialization
 
@@ -107,9 +110,12 @@ Future<void> callPayFortForApplePay(...);
   
 ## Run the example app
 
-- Navigate to the example folder `cd example`
+- Navigate to the example folder `cd dyscan_example`
 - Install the dependencies
   - `flutter pub get`
+- Run the project
+  - `flutter run`
+
 
 ## Contributing & Donate
 
@@ -120,4 +126,9 @@ If you found this project helpful or you learned something from the source code 
 <a href="https://www.buymeacoffee.com/vvvirani"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="80"></a>
 
 <a href="https://www.paypal.com/vvvirani"><img src="https://www.edigitalagency.com.au/wp-content/uploads/new-PayPal-Logo-horizontal-full-color-png.png" height="75"></a>
+
+
+## Author
+
+This `AmazonPayfort` plugin for Flutter is developed by [V Developer](https://github.com/vvvirani). You can contact us at <vvvirani@gmail.com>
 
