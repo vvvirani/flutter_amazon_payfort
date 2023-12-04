@@ -1,3 +1,7 @@
+## 1.0.5
+
+* Update [Repositry (Github)](https://github.com/vvvirani/flutter_amazon_payfort)
+
 ## 1.0.4
 
 * Improve performance and bug fixes
@@ -20,7 +24,7 @@
 
 ## 0.0.9
 
-* Updated Packages version
+* Upgrade Packages version
 * Fix the payment issue in the release mode from the `iOS` side, Currenlty working from the `Android` side
 
 ## 0.0.8

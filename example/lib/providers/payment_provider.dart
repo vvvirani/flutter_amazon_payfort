@@ -26,8 +26,8 @@ class PaymentProvider extends DefaultChangeNotifier {
     try {
       SdkTokenResponse? sdkTokenResponse = await _generateSdkToken();
 
-      if (sdkTokenResponse == null && sdkTokenResponse?.sdkToken == null) {
-        onFailed(sdkTokenResponse?.responseMessage ?? '');
+      if (sdkTokenResponse != null && sdkTokenResponse.sdkToken == null) {
+        onFailed(sdkTokenResponse.responseMessage ?? '');
         return;
       }
 
@@ -65,8 +65,8 @@ class PaymentProvider extends DefaultChangeNotifier {
       SdkTokenResponse? sdkTokenResponse =
           await _generateSdkToken(isApplePay: true);
 
-      if (sdkTokenResponse == null && sdkTokenResponse?.sdkToken == null) {
-        onFailed(sdkTokenResponse?.responseMessage ?? '');
+      if (sdkTokenResponse != null && sdkTokenResponse.sdkToken == null) {
+        onFailed(sdkTokenResponse.responseMessage ?? '');
         return;
       }
 
