@@ -1,3 +1,7 @@
+## 1.0.4
+
+* Improve performance and bug fixes
+
 ## 1.0.3
 
 * Improve performance and bug fixes
