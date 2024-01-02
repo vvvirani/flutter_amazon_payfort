@@ -1,6 +1,10 @@
+## 1.0.7
+
+* Improve performance and bug fixes
+
 ## 1.0.6
 
-* Solved `payment_option` and `token_name` parameters issue (see issue [#17](https://github.com/vvvirani/flutter_amazon_payfort/issues/17)).
+* Solved `payment_option` and `token_name` parameters issue (see issue [#17](https://github.com/vvvirani/flutter_amazon_payfort/issues/17))
 
 ## 1.0.5
 
@@ -16,7 +20,7 @@
 
 ## 1.0.2
 
-* Solved payment failed issue from `iOS` side(see issue [#13](https://github.com/vvvirani/flutter_amazon_payfort/issues/13)).
+* Solved payment failed issue from `iOS` side(see issue [#13](https://github.com/vvvirani/flutter_amazon_payfort/issues/13))
 
 ## 1.0.1
 
