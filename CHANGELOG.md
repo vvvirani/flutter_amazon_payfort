@@ -1,3 +1,7 @@
+## 1.0.6
+
+* Solved `payment_option` and `token_name` parameters issue (see issue [#17](https://github.com/vvvirani/flutter_amazon_payfort/issues/17)).
+
 ## 1.0.5
 
 * Update [Repositry (Github)](https://github.com/vvvirani/flutter_amazon_payfort)

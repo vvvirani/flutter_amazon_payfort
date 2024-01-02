@@ -42,16 +42,30 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         request["currency"] = (requestData["currency"] as? String) ?? "";
         request["amount"] = (requestData["amount"] as? String) ?? "";
         request["language"] = (requestData["language"] as? String) ?? "";
-        request["merchant_reference"] = (requestData["merchant_reference"] as? String) ?? "";
         request["order_description"] = (requestData["order_description"] as? String) ?? "";
         request["sdk_token"] = (requestData["sdk_token"] as? String) ?? "";
-        request["token_name"] = (requestData["token_name"] as? String) ?? "";
-        request["payment_option"] = (requestData["payment_option"] as? String) ?? "";
-        if (requestData["eci"] != nil) {
-            request["eci"] = (requestData["eci"] as? String) ?? "";
-        }
         request["customer_ip"] = (requestData["customer_ip"] as? String) ?? "";
-        request["phone_number"] = (requestData["phone_number"] as? String) ?? "";
+        
+        if let paymentOption = requestData["payment_option"] as? String, !paymentOption.isEmpty {
+            request["payment_option"] = paymentOption;
+        }
+        
+        if let merchantReference = requestData["merchant_reference"] as? String, !merchantReference.isEmpty {
+            request["merchant_reference"] = merchantReference;
+        }
+        
+        if let eci = requestData["eci"] as? String, !eci.isEmpty {
+            request["eci"] = eci;
+        }
+        
+        if let tokenName = requestData["token_name"] as? String, !tokenName.isEmpty {
+            request["token_name"] = tokenName;
+        }
+        
+        if let phoneNumber = requestData["phone_number"] as? String, !phoneNumber.isEmpty {
+            request["phone_number"] = phoneNumber;
+        }
+        
         
         payFort?.hideLoading = options?.hideLoading ?? false
         payFort?.presentAsDefault = options?.presentAsDefault ?? true
@@ -120,21 +134,35 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             var request = [String : String]()
             request["digital_wallet"] = "APPLE_PAY"
             request["command"] = "PURCHASE";
-            request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
             request["amount"] = String(amount.toInt() ?? 0);
             request["currency"] = (requestData?["currency"] as? String) ?? "";
             request["language"] = (requestData?["language"] as? String) ?? "";
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
             request["sdk_token"] = (requestData?["sdk_token"] as? String) ?? "";
-            request["payment_option"] = (requestData?["payment_option"] as? String) ?? "";
-            if (request["eci"] != nil) {
-                request["eci"] = (request["eci"]) ?? "";
-            }
-            request["order_description"] = (requestData?["order_description"] as? String) ?? "";
             request["customer_ip"] = (requestData?["customer_ip"] as? String) ?? "";
             request["customer_name"] = (requestData?["customer_name"] as? String) ?? "";
-            request["token_name"] = (requestData?["token_name"] as? String) ?? "";
-            request["phone_number"] = (requestData?["phone_number"] as? String) ?? "";
+            request["order_description"] = (requestData?["order_description"] as? String) ?? "";
+            
+            if let paymentOption = requestData?["payment_option"] as? String, !paymentOption.isEmpty {
+                request["payment_option"] = paymentOption;
+            }
+            
+            if let merchantReference = requestData?["merchant_reference"] as? String, !merchantReference.isEmpty {
+                request["merchant_reference"] = merchantReference;
+            }
+            
+            if let eci = requestData?["eci"] as? String, !eci.isEmpty {
+                request["eci"] = eci;
+            }
+            
+            if let tokenName = requestData?["token_name"] as? String, !tokenName.isEmpty {
+                request["token_name"] = tokenName;
+            }
+            
+            if let phoneNumber = requestData?["phone_number"] as? String, !phoneNumber.isEmpty {
+                request["phone_number"] = phoneNumber;
+            }
+            
             
             payFort?.hideLoading = options?.hideLoading ?? false
             payFort?.presentAsDefault = options?.presentAsDefault ?? true
