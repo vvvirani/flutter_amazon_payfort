@@ -96,7 +96,7 @@ class AmazonPayfortPlugin : FlutterPlugin,
         requestMap["merchant_reference"] = call.argument<String>("merchant_reference")
 
         val paymentOption = call.argument<String?>("payment_option")
-        if (!paymentOption != null) {
+        if (paymentOption != null) {
             requestMap["payment_option"] = paymentOption
         }
 

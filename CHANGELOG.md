@@ -1,3 +1,7 @@
+## 1.0.9
+
+* Solved Example app not working on Android issue (see issue [#19](https://github.com/vvvirani/flutter_amazon_payfort/issues/19))
+
 ## 1.0.8
 
 * Solved `merchant_reference` and others optional parameters issue
@@ -57,7 +61,7 @@
 
 ## 0.0.5
 
-* Add Mada and Amex card support for Apple Pay
+* Added `mada` and `amex` card support for Apple Pay
 
 ## 0.0.4
 
