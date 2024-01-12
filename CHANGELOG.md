@@ -1,3 +1,8 @@
+## 1.0.8
+
+* Solved `merchant_reference` and others optional parameters issue
+* Update License
+
 ## 1.0.7
 
 * Improve performance and bug fixes

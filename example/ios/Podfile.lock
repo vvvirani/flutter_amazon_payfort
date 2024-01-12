@@ -1,5 +1,5 @@
 PODS:
-  - amazon_payfort (1.0.5):
+  - amazon_payfort (1.0.7):
     - Flutter
     - PayFortSDK
   - Flutter (1.0.0)
@@ -25,7 +25,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/network_info_plus/ios"
 
 SPEC CHECKSUMS:
-  amazon_payfort: 8c7f35a0eae624209bd1db36fbc0aeacb3dfba22
+  amazon_payfort: 523b6646788ad22382aae90ce82660b1bb227dbd
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   network_info_plus: 6d0c3eb8367b8164fa3fb0c19875e3f59d49697f
   PayFortSDK: a33a8488859d7666b3709f347ebb990697e1d110

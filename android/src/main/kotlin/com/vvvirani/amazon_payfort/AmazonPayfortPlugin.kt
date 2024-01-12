@@ -93,29 +93,25 @@ class AmazonPayfortPlugin : FlutterPlugin,
         requestMap["order_description"] = call.argument<String>("order_description")
         requestMap["sdk_token"] = call.argument<String>("sdk_token")
         requestMap["customer_ip"] = call.argument<String>("customer_ip")
+        requestMap["merchant_reference"] = call.argument<String>("merchant_reference")
 
         val paymentOption = call.argument<String?>("payment_option")
-        if (!paymentOption.isNullOrEmpty()) {
+        if (!paymentOption != null) {
             requestMap["payment_option"] = paymentOption
         }
 
-        val merchantReference = call.argument<String?>("merchant_reference")
-        if (merchantReference.isNullOrEmpty()) {
-            requestMap["merchant_reference"] = merchantReference
-        }
-
         val eci = call.argument<String?>("eci")
-        if (eci.isNullOrEmpty()) {
+        if (eci != null) {
             requestMap["eci"] = eci
         }
 
         val tokenName = call.argument<String?>("token_name")
-        if (tokenName.isNullOrEmpty()) {
+        if (tokenName != null) {
             requestMap["tokenName"] = tokenName
         }
 
         val phoneNumber = call.argument<String?>("phone_number")
-        if (tokenName.isNullOrEmpty()) {
+        if (tokenName != null) {
             requestMap["phone_number"] = phoneNumber
         }
 

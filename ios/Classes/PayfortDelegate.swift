@@ -45,24 +45,21 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         request["order_description"] = (requestData["order_description"] as? String) ?? "";
         request["sdk_token"] = (requestData["sdk_token"] as? String) ?? "";
         request["customer_ip"] = (requestData["customer_ip"] as? String) ?? "";
+        request["merchant_reference"] = (requestData["merchant_reference"] as? String) ?? "";
         
-        if let paymentOption = requestData["payment_option"] as? String, !paymentOption.isEmpty {
+        if let paymentOption = requestData["payment_option"] as? String {
             request["payment_option"] = paymentOption;
         }
         
-        if let merchantReference = requestData["merchant_reference"] as? String, !merchantReference.isEmpty {
-            request["merchant_reference"] = merchantReference;
-        }
-        
-        if let eci = requestData["eci"] as? String, !eci.isEmpty {
+        if let eci = requestData["eci"] as? String {
             request["eci"] = eci;
         }
         
-        if let tokenName = requestData["token_name"] as? String, !tokenName.isEmpty {
+        if let tokenName = requestData["token_name"] as? String {
             request["token_name"] = tokenName;
         }
         
-        if let phoneNumber = requestData["phone_number"] as? String, !phoneNumber.isEmpty {
+        if let phoneNumber = requestData["phone_number"] as? String {
             request["phone_number"] = phoneNumber;
         }
         
@@ -142,24 +139,21 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["customer_ip"] = (requestData?["customer_ip"] as? String) ?? "";
             request["customer_name"] = (requestData?["customer_name"] as? String) ?? "";
             request["order_description"] = (requestData?["order_description"] as? String) ?? "";
-            
-            if let paymentOption = requestData?["payment_option"] as? String, !paymentOption.isEmpty {
+            request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
+
+            if let paymentOption = requestData?["payment_option"] as? String {
                 request["payment_option"] = paymentOption;
             }
             
-            if let merchantReference = requestData?["merchant_reference"] as? String, !merchantReference.isEmpty {
-                request["merchant_reference"] = merchantReference;
-            }
-            
-            if let eci = requestData?["eci"] as? String, !eci.isEmpty {
+            if let eci = requestData?["eci"] as? String {
                 request["eci"] = eci;
             }
             
-            if let tokenName = requestData?["token_name"] as? String, !tokenName.isEmpty {
+            if let tokenName = requestData?["token_name"] as? String {
                 request["token_name"] = tokenName;
             }
             
-            if let phoneNumber = requestData?["phone_number"] as? String, !phoneNumber.isEmpty {
+            if let phoneNumber = requestData?["phone_number"] as? String {
                 request["phone_number"] = phoneNumber;
             }
             

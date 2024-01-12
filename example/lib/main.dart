@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Amazon Payfort Example',
       theme: ThemeData(
+        useMaterial3: false,
         primaryColor: AppColors.primaryColor,
         appBarTheme: const AppBarTheme(
           elevation: 0,
