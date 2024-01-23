@@ -11,9 +11,10 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.PluginRegistry.ActivityResultListener
 
 class AmazonPayfortPlugin : FlutterPlugin,
-    MethodCallHandler, ActivityAware {
+    MethodCallHandler, ActivityAware, ActivityResultListener {
 
     private lateinit var channel: MethodChannel
 
@@ -78,9 +79,6 @@ class AmazonPayfortPlugin : FlutterPlugin,
         }
     }
 
-    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
 
     private fun createRequestMap(call: MethodCall): MutableMap<String, Any?> {
         val requestMap: MutableMap<String, Any?> = HashMap()
@@ -118,6 +116,7 @@ class AmazonPayfortPlugin : FlutterPlugin,
         return requestMap
     }
 
+
     private fun processPayFortOptions(call: MethodCall): PayFortOptions {
         return PayFortOptions(
             environment = call.argument<String>("environment") ?: "",
@@ -126,40 +125,38 @@ class AmazonPayfortPlugin : FlutterPlugin,
         )
     }
 
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
+
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         this.binding = binding
         binding.addActivityResultListener { requestCode: Int, resultCode: Int, data: Intent? ->
-            if (requestCode == service.payfortRequestCode) if (data != null && resultCode == RESULT_OK) service.onActivityResult(
-                requestCode,
-                resultCode,
-                data
-            ) else {
-                val intent = Intent()
-                intent.putExtra("", "")
-            }
-            true
+            onActivityResult(requestCode, resultCode, data)
         }
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
+        binding.removeActivityResultListener { requestCode: Int, resultCode: Int, data: Intent? ->
+            onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         this.binding = binding
         binding.addActivityResultListener { requestCode: Int, resultCode: Int, data: Intent? ->
-            if (requestCode == service.payfortRequestCode) if (data != null && resultCode == RESULT_OK) service.onActivityResult(
-                requestCode,
-                resultCode,
-                data
-            ) else {
-                val intent = Intent()
-                intent.putExtra("", "")
-                service.onActivityResult(requestCode, resultCode, intent)
-            }
-            true
+            onActivityResult(requestCode, resultCode, data)
         }
     }
 
     override fun onDetachedFromActivity() {
+        binding.removeActivityResultListener { requestCode: Int, resultCode: Int, data: Intent? ->
+            onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        service.onActivityResult(requestCode, resultCode, data)
+        return true
     }
 }

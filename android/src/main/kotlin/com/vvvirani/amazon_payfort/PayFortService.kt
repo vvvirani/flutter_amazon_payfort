@@ -34,7 +34,7 @@ class PayFortService {
         this.channel = channel
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (fortCallback != null) {
             fortCallback?.onActivityResult(requestCode, resultCode, data)
         }

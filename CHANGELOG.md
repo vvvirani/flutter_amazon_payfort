@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Solved `FortCallBackManager` object is not properly initialized before calling its `onActivityResult` method from `Android` side
+
 ## 1.0.9
 
 * Solved Example app not working on Android issue (see issue [#19](https://github.com/vvvirani/flutter_amazon_payfort/issues/19))

@@ -27,7 +27,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -43,14 +43,14 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
     }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.work:work-runtime-ktx:2.8.1"
-    implementation("com.amazon:fortpayment:+:release@aar"){
+    implementation("com.amazon:fortpayment:2.1.0:release@aar"){
         transitive = true
     }
 }
