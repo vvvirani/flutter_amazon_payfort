@@ -172,24 +172,24 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
                 success: { requestDic, responeDic in
                     
                     print("succeeded: - \(requestDic) - \(responeDic)")
+                    completion(.success)
                     self.channel?.invokeMethod("apple_pay_succeeded", arguments: responeDic)
-                    controller.dismiss(animated: true)
                     return
                     
                 },
                 faild: { requestDic, responeDic, message in
                     
                     print("failed: \(message) - \(requestDic) - \(responeDic)")
+                    completion(.failure)
                     self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": message])
-                    controller.dismiss(animated: true)
                     return
                     
                 })
         } else {
             
             print("asyncSuccessful: \(asyncSuccessful)")
+            completion(.failure)
             self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
-            controller.dismiss(animated: true)
         }
         
     }
