@@ -1,3 +1,9 @@
+## 1.1.1
+
+* Set Apple Pay status after getting Apple Pay results from Payfort SDK (see [#26](https://github.com/vvvirani/flutter_amazon_payfort/pull/26))
+* Technical problem (see [#25](https://github.com/vvvirani/flutter_amazon_payfort/issues/25))
+* Fix technical issue in android device (see [#27](https://github.com/vvvirani/flutter_amazon_payfort/pull/27))
+
 ## 1.1.0
 
 * Solved `FortCallBackManager` object is not properly initialized before calling its `onActivityResult` method from `Android` side
