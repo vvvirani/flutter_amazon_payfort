@@ -1,0 +1,35 @@
+PODS:
+  - amazon_payfort (1.0.7):
+    - Flutter
+    - PayFortSDK
+  - Flutter (1.0.0)
+  - network_info_plus (0.0.1):
+    - Flutter
+  - PayFortSDK (3.1.0)
+
+DEPENDENCIES:
+  - amazon_payfort (from `.symlinks/plugins/amazon_payfort/ios`)
+  - Flutter (from `Flutter`)
+  - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
+
+SPEC REPOS:
+  trunk:
+    - PayFortSDK
+
+EXTERNAL SOURCES:
+  amazon_payfort:
+    :path: ".symlinks/plugins/amazon_payfort/ios"
+  Flutter:
+    :path: Flutter
+  network_info_plus:
+    :path: ".symlinks/plugins/network_info_plus/ios"
+
+SPEC CHECKSUMS:
+  amazon_payfort: 523b6646788ad22382aae90ce82660b1bb227dbd
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  network_info_plus: 6d0c3eb8367b8164fa3fb0c19875e3f59d49697f
+  PayFortSDK: a33a8488859d7666b3709f347ebb990697e1d110
+
+PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+
+COCOAPODS: 1.14.3
