@@ -88,7 +88,13 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             faild: { requestDic, responeDic, message in
                 
                 print("failed: \(message) - \(requestDic) - \(responeDic)")
-                self.channel?.invokeMethod("failed", arguments: ["message": message])
+                
+                let result: [String: Any] = [
+                    "message": message,
+                    "request": requestDic,
+                    "response": responeDic
+                ]
+                self.channel?.invokeMethod("failed", arguments: result)
                 return
                 
             }
@@ -140,7 +146,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["customer_name"] = (requestData?["customer_name"] as? String) ?? "";
             request["order_description"] = (requestData?["order_description"] as? String) ?? "";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
-
+            
             if let paymentOption = requestData?["payment_option"] as? String {
                 request["payment_option"] = paymentOption;
             }
@@ -164,7 +170,6 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             
             print("Request Payfort :\(request)")
             
-            
             payFort?.callPayFortForApplePay(
                 withRequest: request,
                 applePayPayment: payment,
@@ -178,18 +183,31 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
                     
                 },
                 faild: { requestDic, responeDic, message in
-                    
                     print("failed: \(message) - \(requestDic) - \(responeDic)")
+                    
+                    let result: [String: Any] = [
+                        "message": message,
+                        "request": requestDic,
+                        "response": responeDic
+                    ]
+                    
                     completion(.failure)
-                    self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": message])
+                    self.channel?.invokeMethod("apple_pay_failed", arguments: result)
                     return
                     
                 })
         } else {
-            
             print("asyncSuccessful: \(asyncSuccessful)")
+            
+            let result: [String: Any] = [
+                "message": "Something went wrong",
+                "response": [
+                    "async_successful": asyncSuccessful,
+                ]
+            ]
+            
             completion(.failure)
-            self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
+            self.channel?.invokeMethod("apple_pay_failed", arguments: result)
         }
         
     }

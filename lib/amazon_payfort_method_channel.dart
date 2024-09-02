@@ -87,7 +87,9 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
           break;
         case _MethodType.failed:
           if (_payFortResultCallback != null) {
-            _payFortResultCallback?.onFailed(call.arguments['message']);
+            PayFortFailureResult result = PayFortFailureResult.fromMap(
+                Map<String, dynamic>.from(call.arguments));
+            _payFortResultCallback?.onFailed(result);
           }
           break;
         case _MethodType.cancelled:
@@ -104,7 +106,9 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
           break;
         case _MethodType.applePayFailed:
           if (_applePayResultCallback != null) {
-            _applePayResultCallback?.onFailed(call.arguments['message']);
+            PayFortFailureResult result = PayFortFailureResult.fromMap(
+                Map<String, dynamic>.from(call.arguments));
+            _applePayResultCallback?.onFailed(result);
           }
           break;
         default:

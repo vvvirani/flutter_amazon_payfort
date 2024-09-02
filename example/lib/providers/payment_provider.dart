@@ -27,7 +27,8 @@ class PaymentProvider extends DefaultChangeNotifier {
       SdkTokenResponse? sdkTokenResponse = await _generateSdkToken();
 
       if (sdkTokenResponse != null && sdkTokenResponse.sdkToken == null) {
-        onFailed(sdkTokenResponse.responseMessage ?? '');
+        onFailed(PayFortFailureResult(
+            responseMessage: sdkTokenResponse.responseMessage ?? ''));
         return;
       }
 
@@ -53,7 +54,7 @@ class PaymentProvider extends DefaultChangeNotifier {
         ),
       );
     } catch (e) {
-      onFailed(e.toString());
+      onFailed(PayFortFailureResult(responseMessage: e.toString()));
     }
   }
 
@@ -66,7 +67,8 @@ class PaymentProvider extends DefaultChangeNotifier {
           await _generateSdkToken(isApplePay: true);
 
       if (sdkTokenResponse != null && sdkTokenResponse.sdkToken == null) {
-        onFailed(sdkTokenResponse.responseMessage ?? '');
+        onFailed(PayFortFailureResult(
+            responseMessage: sdkTokenResponse.responseMessage ?? ''));
         return;
       }
 
@@ -93,7 +95,7 @@ class PaymentProvider extends DefaultChangeNotifier {
         ),
       );
     } catch (e) {
-      onFailed(e.toString());
+      onFailed(PayFortFailureResult(responseMessage: e.toString()));
     }
   }
 

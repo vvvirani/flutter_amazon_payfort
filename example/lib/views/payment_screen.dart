@@ -70,7 +70,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 _showSnackBar('Transaction succeeded: ${result.fortId}');
               },
               onFailed: (error) {
-                _showSnackBar(error);
+                _showSnackBar(error.responseMessage);
               },
               onCancelled: () {
                 _showSnackBar('Cancelled by you');
@@ -95,7 +95,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   _showSnackBar('Transaction succeeded: ${result.fortId}');
                 },
                 onFailed: (error) {
-                  _showSnackBar(error);
+                  _showSnackBar(error.responseMessage);
                 },
               );
             },

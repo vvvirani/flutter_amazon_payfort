@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException
 
 class PayFortService {
 
-     val payfortRequestCode = 1166
+    private val payfortRequestCode = 1166
 
     private var options: PayFortOptions? = null
 
@@ -68,8 +68,10 @@ class PayFortService {
                         responeDic: MutableMap<String, Any>?,
                     ) {
                         Log.d(tag, "onFailure : $requestDic $responeDic")
-                        val result: MutableMap<String, Any?> = HashMap()
-                        result["message"] = responeDic?.get("response_message")
+                        val result: MutableMap<String, Any?> = hashMapOf(
+                            "message" to responeDic?.get("response_message"),
+                            "response" to responeDic
+                        )
                         channel?.invokeMethod("failed", result)
                         return
                     }
@@ -86,6 +88,14 @@ class PayFortService {
             )
         } catch (e: FortException) {
             Log.d(tag, "FortException : ${e.code}, ${e.message}")
+            val result: MutableMap<String, Any?> = hashMapOf(
+                "message" to e.message,
+                "response" to hashMapOf(
+                    "error_message" to e.message,
+                    "code" to e.code
+                )
+            )
+            channel?.invokeMethod("failed", result)
         }
     }
 
