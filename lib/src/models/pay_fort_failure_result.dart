@@ -1,25 +1,25 @@
 class PayFortFailureResult {
   /// The message description of the response code; it returns according to the request language..
   ///
-  final String responseMessage;
+  final String message;
 
-  final Map<String, Object?>? response;
+  final Map<String, dynamic>? response;
 
   PayFortFailureResult({
-    required this.responseMessage,
+    required this.message,
     this.response,
   });
 
   factory PayFortFailureResult.fromMap(Map<String, dynamic> map) {
     return PayFortFailureResult(
-      responseMessage: map['response_message'],
-      response: map['response'],
+      message: map['message'],
+      response: (map['response'] as Map?)?.cast(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'response_message': responseMessage,
+      'message': message,
       'response': response,
     };
   }

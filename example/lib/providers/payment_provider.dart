@@ -28,7 +28,7 @@ class PaymentProvider extends DefaultChangeNotifier {
 
       if (sdkTokenResponse != null && sdkTokenResponse.sdkToken == null) {
         onFailed(PayFortFailureResult(
-            responseMessage: sdkTokenResponse.responseMessage ?? ''));
+            message: sdkTokenResponse.responseMessage ?? ''));
         return;
       }
 
@@ -54,7 +54,7 @@ class PaymentProvider extends DefaultChangeNotifier {
         ),
       );
     } catch (e) {
-      onFailed(PayFortFailureResult(responseMessage: e.toString()));
+      onFailed(PayFortFailureResult(message: e.toString()));
     }
   }
 
@@ -68,7 +68,7 @@ class PaymentProvider extends DefaultChangeNotifier {
 
       if (sdkTokenResponse != null && sdkTokenResponse.sdkToken == null) {
         onFailed(PayFortFailureResult(
-            responseMessage: sdkTokenResponse.responseMessage ?? ''));
+            message: sdkTokenResponse.responseMessage ?? ''));
         return;
       }
 
@@ -95,7 +95,7 @@ class PaymentProvider extends DefaultChangeNotifier {
         ),
       );
     } catch (e) {
-      onFailed(PayFortFailureResult(responseMessage: e.toString()));
+      onFailed(PayFortFailureResult(message: e.toString()));
     }
   }
 

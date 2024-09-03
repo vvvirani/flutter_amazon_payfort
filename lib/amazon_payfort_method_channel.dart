@@ -1,5 +1,6 @@
 import 'package:amazon_payfort/amazon_payfort.dart';
 import 'package:amazon_payfort/src/helpers/local_platform.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'amazon_payfort_platform_interface.dart';
@@ -114,7 +115,9 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
         default:
           throw Exception('unknown method called from native');
       }
-    } catch (e) {
+    } catch (e, t) {
+      debugPrint('Error in nativeCallHandler: $e');
+      debugPrintStack(stackTrace: t);
       throw Exception(e);
     }
     return false;
