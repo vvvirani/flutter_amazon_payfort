@@ -20,7 +20,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         self.options = options
         self.channel = channel
         currentEnv = getEnvironment(environment: self.options?.environment)
-        payFort = PayFortController.init(enviroment: PayFortEnviroment.sandBox)
+        payFort = PayFortController.init(enviroment: currentEnv)
     }
     
     public func getEnvironment(environment :String?) -> PayFortEnviroment {
@@ -179,8 +179,8 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
                 currentViewController: viewController!,
                 success: { requestDic, responeDic in
                     completion(.success)
-                    
                     print("succeeded:- \(requestDic) - \(responeDic)")
+                    
                     self.channel?.invokeMethod("apple_pay_succeeded", arguments: responeDic)
                     return
                 },
@@ -206,7 +206,6 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             let result: [String: Any] = [
                 "message": "Something went wrong",
                 "response": [
-                    "current_enviroment": getEnvFromPayFortEnviroment(currentEnv),
                     "transaction_identifier": payment.token.transactionIdentifier,
                     "async_successful": asyncSuccessful,
                 ] as [String : Any]
