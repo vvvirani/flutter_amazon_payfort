@@ -1,30 +1,20 @@
 class FortRequest {
+  /// The transaction’s command. [AUTHORIZATION, PURCHASE]
+  ///
+  final String command;
+
   /// The transaction’s amount.
   /// Each currency has predefined allowed decimal points that should be taken into consideration when sending the amount.
   ///
   final num amount;
 
-  /// The customer’s name.
-  ///
-  final String customerName;
-
   /// The customer’s email. Example: customer1@domain.com
   ///
   final String customerEmail;
 
-  /// A description of the order.
-  ///
-  final String orderDescription;
-
   /// An SDK Token to enable using the Amazon Payment Services Mobile SDK.
   ///
   final String sdkToken;
-
-  /// It holds the customer’s IP address.
-  /// It’s Mandatory, if the fraud service is active.
-  /// We support IPv4 and IPv6 as shown in the example below.
-  ///
-  final String customerIp;
 
   /// The currency of the transaction’s amount in ISO code 3. Example: AED, USD, EUR, GBP.
   /// By Default currency : [USD].
@@ -39,6 +29,20 @@ class FortRequest {
   /// The Merchant’s unique order number.
   ///
   final String merchantReference;
+
+  /// The customer’s name.
+  ///
+  final String? customerName;
+
+  /// A description of the order.
+  ///
+  final String? orderDescription;
+
+  /// It holds the customer’s IP address.
+  /// It’s Mandatory, if the fraud service is active.
+  /// We support IPv4 and IPv6 as shown in the example below.
+  ///
+  final String? customerIp;
 
   /// The Token received from the Tokenization process..
   ///
@@ -57,13 +61,14 @@ class FortRequest {
   final String? phoneNumber;
 
   FortRequest({
+    required this.command,
     required this.amount,
-    required this.customerName,
     required this.customerEmail,
-    required this.orderDescription,
     required this.sdkToken,
-    required this.customerIp,
     required this.merchantReference,
+    this.customerName,
+    this.customerIp,
+    this.orderDescription,
     this.currency = 'USD',
     this.language = 'en',
     this.tokenName,
@@ -73,11 +78,12 @@ class FortRequest {
   });
 
   FortRequest copyWith({
+    String? command,
     num? amount,
-    String? customerName,
     String? customerEmail,
-    String? orderDescription,
     String? sdkToken,
+    String? customerName,
+    String? orderDescription,
     String? customerIp,
     String? currency,
     String? language,
@@ -88,12 +94,13 @@ class FortRequest {
     String? phoneNumber,
   }) {
     return FortRequest(
+      command: command ?? this.command,
       amount: amount ?? this.amount,
-      customerName: customerName ?? this.customerName,
       customerEmail: customerEmail ?? this.customerEmail,
-      orderDescription: orderDescription ?? this.orderDescription,
       sdkToken: sdkToken ?? this.sdkToken,
+      customerName: customerName ?? this.customerName,
       customerIp: customerIp ?? this.customerIp,
+      orderDescription: orderDescription ?? this.orderDescription,
       currency: currency ?? this.currency,
       language: language ?? this.language,
       merchantReference: merchantReference ?? this.merchantReference,
@@ -106,12 +113,13 @@ class FortRequest {
 
   Map<String, dynamic> asMap() {
     return <String, dynamic>{
+      'command': command,
       'amount': '$amount',
-      'customer_name': customerName,
       'customer_email': customerEmail,
-      'order_description': orderDescription,
       'sdk_token': sdkToken,
+      'customer_name': customerName,
       'customer_ip': customerIp,
+      'order_description': orderDescription,
       'currency': currency,
       'language': language,
       'merchant_reference': merchantReference,

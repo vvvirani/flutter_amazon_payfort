@@ -34,6 +34,7 @@ class PaymentProvider extends DefaultChangeNotifier {
       /// Step 4: Processing Payment [Amount multiply with 100] ex. 10 * 100 = 1000 (10 SAR)
       /// Amount value send always round ex. [100] not [100.00, 100.21]
       FortRequest request = FortRequest(
+        command: 'AUTHORIZATION',
         amount: 10 * 100,
         customerName: 'Test Customer',
         customerEmail: 'test@customer.com',
@@ -73,6 +74,7 @@ class PaymentProvider extends DefaultChangeNotifier {
       /// Step 4: Processing Payment [Don't multiply with 100]
       /// Amount value send always round ex. [100] not [100.00, 100.21]
       FortRequest request = FortRequest(
+        command: 'AUTHORIZATION',
         amount: 1000,
         customerName: 'Test Customer',
         customerEmail: 'test@customer.com',
