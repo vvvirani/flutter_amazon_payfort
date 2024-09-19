@@ -4,8 +4,9 @@ import CommonCrypto
 import PassKit
 
 public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDelegate {
-    
     private var payFort: PayFortController? = nil
+    
+    private var currentEnv = PayFortEnviroment.sandBox
     
     private var options: PayFortOptions? = nil
     
@@ -18,8 +19,8 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     func initialize(options: PayFortOptions, channel: FlutterMethodChannel){
         self.options = options
         self.channel = channel
-        let environment = getEnvironment(environment: self.options?.environment)
-        payFort = PayFortController.init(enviroment: environment)
+        currentEnv = getEnvironment(environment: self.options?.environment)
+        payFort = PayFortController.init(enviroment: currentEnv)
     }
     
     public func getEnvironment(environment :String?) -> PayFortEnviroment {
@@ -33,8 +34,18 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         }
     }
     
+    private func getEnvFromPayFortEnviroment(_ env: PayFortEnviroment) -> String {
+        switch(env) {
+        case .sandBox:
+            return "test"
+        case .production:
+            return "production"
+        default:
+            return "UNKNOWN"
+        }
+    }
+    
     public func callPayFort(requestData : Dictionary<String, Any>, viewController : UIViewController){
-        
         var request = [String : String]()
         request["command"] = "PURCHASE";
         request["customer_name"] = (requestData["customer_name"] as? String) ?? "";
@@ -63,7 +74,6 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["phone_number"] = phoneNumber;
         }
         
-        
         payFort?.hideLoading = options?.hideLoading ?? false
         payFort?.presentAsDefault = options?.presentAsDefault ?? true
         payFort?.isShowResponsePage = options?.isShowResponsePage ?? true
@@ -72,47 +82,48 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             withRequest: request,
             currentViewController: viewController,
             success: { requestDic, responeDic in
-                
-                print("succeeded: - \(requestDic) - \(responeDic)")
+                print("succeeded:- \(requestDic) - \(responeDic)")
                 self.channel?.invokeMethod("succeeded", arguments: responeDic)
                 return
                 
             },
             canceled: { requestDic, responeDic in
-                
-                print("cancelled: - \(requestDic) -  \(responeDic)")
+                print("cancelled:- \(requestDic) -  \(responeDic)")
                 self.channel?.invokeMethod("cancelled", arguments: nil)
                 return
-                
             },
             faild: { requestDic, responeDic, message in
+                print("failed:- \(message) - \(requestDic) - \(responeDic)")
                 
-                print("failed: \(message) - \(requestDic) - \(responeDic)")
-                self.channel?.invokeMethod("failed", arguments: ["message": message])
+                let result: [String: Any] = [
+                    "message": message,
+                    "request": requestDic,
+                    "response": responeDic
+                ]
+                self.channel?.invokeMethod("failed", arguments: result)
                 return
-                
             }
         )
     }
     
     public func callPayFortForApplePay(requestData : Dictionary<String, Any>, viewController : UIViewController){
-        
         self.requestData = requestData
         self.viewController = viewController
         
         let amount = decimal(with: (requestData["amount"] as? String) ?? "0.0")
-        
         let paymentRequest = PKPaymentRequest()
         paymentRequest.merchantIdentifier = (requestData["apple_pay_merchant_id"] as? String) ?? "";
+        paymentRequest.countryCode = (requestData["country_code"] as? String) ?? "";
+        paymentRequest.currencyCode = (requestData["currency"] as? String) ?? "";
         if #available(iOS 12.1.1, *) {
             paymentRequest.supportedNetworks = [.visa, .masterCard, .mada, .amex]
         } else {
             paymentRequest.supportedNetworks = [.visa, .masterCard, .amex]
         };
+        paymentRequest.paymentSummaryItems = [
+            PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: amount)
+        ]
         paymentRequest.merchantCapabilities = .capability3DS;
-        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: (requestData["order_description"] as? String) ?? "", amount: amount)]
-        paymentRequest.countryCode = (requestData["country_code"] as? String) ?? "";
-        paymentRequest.currencyCode = (requestData["currency"] as? String) ?? "";
         
         let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest)
         applePayController?.delegate = self
@@ -127,7 +138,6 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         let amount = (Double((requestData?["amount"] as? String) ?? "0.0") ?? 0.0) * 100
         
         if asyncSuccessful {
-            
             var request = [String : String]()
             request["digital_wallet"] = "APPLE_PAY"
             request["command"] = "PURCHASE";
@@ -140,7 +150,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["customer_name"] = (requestData?["customer_name"] as? String) ?? "";
             request["order_description"] = (requestData?["order_description"] as? String) ?? "";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
-
+            
             if let paymentOption = requestData?["payment_option"] as? String {
                 request["payment_option"] = paymentOption;
             }
@@ -157,41 +167,51 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
                 request["phone_number"] = phoneNumber;
             }
             
-            
             payFort?.hideLoading = options?.hideLoading ?? false
             payFort?.presentAsDefault = options?.presentAsDefault ?? true
             payFort?.isShowResponsePage = options?.isShowResponsePage ?? true
             
-            print("Request Payfort :\(request)")
-            
+            print("Request Payfort: \(request)")
             
             payFort?.callPayFortForApplePay(
                 withRequest: request,
                 applePayPayment: payment,
                 currentViewController: viewController!,
                 success: { requestDic, responeDic in
-                    
-                    print("succeeded: - \(requestDic) - \(responeDic)")
                     completion(.success)
+                    print("succeeded:- \(requestDic) - \(responeDic)")
+                    
                     self.channel?.invokeMethod("apple_pay_succeeded", arguments: responeDic)
                     return
-                    
                 },
                 faild: { requestDic, responeDic, message in
-                    
-                    print("failed: \(message) - \(requestDic) - \(responeDic)")
                     completion(.failure)
-                    self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": message])
-                    return
                     
+                    print("failed:- \(message) - \(requestDic) - \(responeDic)")
+                    
+                    let result: [String: Any] = [
+                        "message": message,
+                        "request": requestDic,
+                        "response": responeDic
+                    ]
+                    
+                    self.channel?.invokeMethod("apple_pay_failed", arguments: result)
+                    return
                 })
         } else {
+            completion(.failure)
             
             print("asyncSuccessful: \(asyncSuccessful)")
-            completion(.failure)
-            self.channel?.invokeMethod("apple_pay_failed", arguments: ["message": "Something went wrong"])
+            
+            let result: [String: Any] = [
+                "message": "Something went wrong",
+                "response": [
+                    "transaction_identifier": payment.token.transactionIdentifier,
+                    "async_successful": asyncSuccessful,
+                ] as [String : Any]
+            ]
+            self.channel?.invokeMethod("apple_pay_failed", arguments: result)
         }
-        
     }
     
     public func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {

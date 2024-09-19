@@ -1,5 +1,6 @@
 import 'package:amazon_payfort/amazon_payfort.dart';
 import 'package:amazon_payfort/src/helpers/local_platform.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'amazon_payfort_platform_interface.dart';
@@ -87,7 +88,9 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
           break;
         case _MethodType.failed:
           if (_payFortResultCallback != null) {
-            _payFortResultCallback?.onFailed(call.arguments['message']);
+            PayFortFailureResult result = PayFortFailureResult.fromMap(
+                Map<String, dynamic>.from(call.arguments));
+            _payFortResultCallback?.onFailed(result);
           }
           break;
         case _MethodType.cancelled:
@@ -104,13 +107,17 @@ class MethodChannelAmazonPayfort extends AmazonPayfortPlatform {
           break;
         case _MethodType.applePayFailed:
           if (_applePayResultCallback != null) {
-            _applePayResultCallback?.onFailed(call.arguments['message']);
+            PayFortFailureResult result = PayFortFailureResult.fromMap(
+                Map<String, dynamic>.from(call.arguments));
+            _applePayResultCallback?.onFailed(result);
           }
           break;
         default:
           throw Exception('unknown method called from native');
       }
-    } catch (e) {
+    } catch (e, t) {
+      debugPrint('Error in nativeCallHandler: $e');
+      debugPrintStack(stackTrace: t);
       throw Exception(e);
     }
     return false;

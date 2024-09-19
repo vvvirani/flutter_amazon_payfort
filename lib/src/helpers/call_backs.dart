@@ -2,7 +2,7 @@ import 'package:amazon_payfort/src/models/models.dart';
 
 typedef SucceededCallback = void Function(PayFortResult result);
 
-typedef FailedCallback = void Function(String message);
+typedef FailedCallback = void Function(PayFortFailureResult result);
 
 typedef CancelledCallback = void Function();
 
