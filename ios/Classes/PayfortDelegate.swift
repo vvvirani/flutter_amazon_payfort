@@ -146,9 +146,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             request["language"] = (requestData?["language"] as? String) ?? "";
             request["customer_email"] = (requestData?["customer_email"] as? String) ?? "";
             request["sdk_token"] = (requestData?["sdk_token"] as? String) ?? "";
-            request["customer_ip"] = (requestData?["customer_ip"] as? String) ?? "";
             request["customer_name"] = (requestData?["customer_name"] as? String) ?? "";
-            request["order_description"] = (requestData?["order_description"] as? String) ?? "";
             request["merchant_reference"] = (requestData?["merchant_reference"] as? String) ?? "";
             
             if let paymentOption = requestData?["payment_option"] as? String {
@@ -165,6 +163,14 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
             
             if let phoneNumber = requestData?["phone_number"] as? String {
                 request["phone_number"] = phoneNumber;
+            }
+
+            if let customerIp = requestData?["customer_ip"] as? String {
+                request["customer_ip"] = customerIp;
+            }
+
+            if let orderDescription = requestData?["order_description"] as? String {
+                request["order_description"] = orderDescription;
             }
             
             payFort?.hideLoading = options?.hideLoading ?? false

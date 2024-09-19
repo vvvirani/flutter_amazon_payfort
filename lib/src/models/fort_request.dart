@@ -14,7 +14,7 @@ class FortRequest {
 
   /// A description of the order.
   ///
-  final String orderDescription;
+  final String? orderDescription;
 
   /// An SDK Token to enable using the Amazon Payment Services Mobile SDK.
   ///
@@ -24,7 +24,7 @@ class FortRequest {
   /// It’s Mandatory, if the fraud service is active.
   /// We support IPv4 and IPv6 as shown in the example below.
   ///
-  final String customerIp;
+  final String? customerIp;
 
   /// The currency of the transaction’s amount in ISO code 3. Example: AED, USD, EUR, GBP.
   /// By Default currency : [USD].
@@ -60,9 +60,9 @@ class FortRequest {
     required this.amount,
     required this.customerName,
     required this.customerEmail,
-    required this.orderDescription,
+    this.orderDescription,
     required this.sdkToken,
-    required this.customerIp,
+    this.customerIp,
     required this.merchantReference,
     this.currency = 'USD',
     this.language = 'en',
