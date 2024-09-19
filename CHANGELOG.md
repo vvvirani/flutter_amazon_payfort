@@ -1,3 +1,7 @@
+## 1.1.3
+
+* Make `customer_ip` and `order_description` params optional
+
 ## 1.1.2
 
 * Merge PR (see [#30](https://github.com/vvvirani/flutter_amazon_payfort/pull/30))
