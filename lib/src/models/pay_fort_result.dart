@@ -82,7 +82,7 @@ class PayFortResult {
   ///
   final String? phoneNumber;
 
-  PayFortResult({
+  const PayFortResult({
     this.responseCode,
     this.responseMessage,
     this.command,

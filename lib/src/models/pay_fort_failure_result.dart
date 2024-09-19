@@ -5,7 +5,7 @@ class PayFortFailureResult {
 
   final Map<String, dynamic>? response;
 
-  PayFortFailureResult({
+  const PayFortFailureResult({
     required this.message,
     this.response,
   });

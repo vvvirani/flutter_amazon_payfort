@@ -1,3 +1,7 @@
+## 1.1.2
+
+* Merge PR (see [#30](https://github.com/vvvirani/flutter_amazon_payfort/pull/30))
+
 ## 1.1.1
 
 * Set Apple Pay status after getting Apple Pay results from Payfort SDK (see [#26](https://github.com/vvvirani/flutter_amazon_payfort/pull/26))

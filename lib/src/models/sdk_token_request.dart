@@ -1,4 +1,4 @@
-const String _kCammand = 'SDK_TOKEN';
+const String _kCommand = 'SDK_TOKEN';
 
 class SdkTokenRequest {
   /// Alphanumeric access code.
@@ -22,7 +22,7 @@ class SdkTokenRequest {
   ///
   final String? signature;
 
-  SdkTokenRequest({
+  const SdkTokenRequest({
     required this.accessCode,
     required this.merchantIdentifier,
     this.language = 'en',
@@ -48,7 +48,7 @@ class SdkTokenRequest {
 
   Map<String, dynamic> asRequest() {
     return <String, dynamic>{
-      'service_command': _kCammand,
+      'service_command': _kCommand,
       'access_code': accessCode,
       'merchant_identifier': merchantIdentifier,
       'language': language,
@@ -63,7 +63,7 @@ class SdkTokenRequest {
         'device_id=$deviceId'
         'language=$language'
         'merchant_identifier=$merchantIdentifier'
-        'service_command=$_kCammand'
+        'service_command=$_kCommand'
         '$shaRequestPhrase';
   }
 }

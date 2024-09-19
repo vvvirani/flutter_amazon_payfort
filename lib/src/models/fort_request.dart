@@ -56,7 +56,7 @@ class FortRequest {
   ///
   final String? phoneNumber;
 
-  FortRequest({
+  const FortRequest({
     required this.amount,
     required this.customerName,
     required this.customerEmail,

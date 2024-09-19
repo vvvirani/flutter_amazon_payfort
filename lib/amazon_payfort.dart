@@ -45,7 +45,7 @@ class AmazonPayfort {
     if (_isInitialize) {
       return _platform.getDeviceId();
     } else {
-      throw PayFortNotInitialzedException();
+      throw PayFortNotInitializedException();
     }
   }
 
@@ -63,7 +63,7 @@ class AmazonPayfort {
         concatenatedString: concatenatedString,
       );
     } else {
-      throw PayFortNotInitialzedException();
+      throw PayFortNotInitializedException();
     }
   }
 
@@ -78,7 +78,7 @@ class AmazonPayfort {
     if (_isInitialize) {
       return await _platform.callPayFort(request: request, callback: callBack);
     } else {
-      throw PayFortNotInitialzedException();
+      throw PayFortNotInitializedException();
     }
   }
 
@@ -98,7 +98,7 @@ class AmazonPayfort {
         callback: callback,
       );
     } else {
-      throw PayFortNotInitialzedException();
+      throw PayFortNotInitializedException();
     }
   }
 }

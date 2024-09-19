@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'amazon_payfort'
-  s.version          = '1.1.1'
+  s.version          = '1.1.2'
   s.summary          = 'Flutter plugin for Amazon Payment Services (Payfort). It supports both android and iOS.'
   s.description      = <<-DESC
 Flutter plugin for Amazon Payment Services (Payfort). It supports both android and iOS.
