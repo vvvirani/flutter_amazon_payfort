@@ -4,12 +4,11 @@ import 'package:amazon_payfort/src/helpers/exceptions.dart';
 import 'package:amazon_payfort/src/models/fort_request.dart';
 import 'package:amazon_payfort/src/models/pay_fort_options.dart';
 
+export 'src/enums/command.dart';
 export 'src/enums/fort_environment.dart';
-
-export 'src/models/models.dart';
-
 export 'src/helpers/call_backs.dart';
 export 'src/helpers/exceptions.dart';
+export 'src/models/models.dart';
 
 /// Amazon Payment Services is the new name for PayFort.
 /// PayFort is a leading provider of payment processing services that was acquired by Amazon in 2017.

@@ -47,7 +47,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
     
     public func callPayFort(requestData : Dictionary<String, Any>, viewController : UIViewController){
         var request = [String : String]()
-        request["command"] = "PURCHASE";
+        request["command"] = (requestData["command"] as? String) ?? "";
         request["customer_name"] = (requestData["customer_name"] as? String) ?? "";
         request["customer_email"] = (requestData["customer_email"] as? String) ?? "";
         request["currency"] = (requestData["currency"] as? String) ?? "";
@@ -140,7 +140,7 @@ public class PayFortDelegate: NSObject, PKPaymentAuthorizationViewControllerDele
         if asyncSuccessful {
             var request = [String : String]()
             request["digital_wallet"] = "APPLE_PAY"
-            request["command"] = "PURCHASE";
+            request["command"] = (requestData?["command"] as? String) ?? "";
             request["amount"] = String(amount.toInt() ?? 0);
             request["currency"] = (requestData?["currency"] as? String) ?? "";
             request["language"] = (requestData?["language"] as? String) ?? "";
