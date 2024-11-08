@@ -1,3 +1,7 @@
+## 1.1.4
+
+* Merge PR: Add Command Enum for Customizable Command Types (see [#33](https://github.com/vvvirani/flutter_amazon_payfort/pull/33))
+
 ## 1.1.3
 
 * Make `customer_ip` and `order_description` params optional

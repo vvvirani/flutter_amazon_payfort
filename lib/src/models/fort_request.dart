@@ -1,7 +1,7 @@
-import 'package:amazon_payfort/src/enums/command.dart';
+import 'package:amazon_payfort/src/enums/fort_command.dart';
 
 class FortRequest {
-  final Command command;
+  final FortCommand command;
 
   /// The transaction’s amount.
   /// Each currency has predefined allowed decimal points that should be taken into consideration when sending the amount.
@@ -78,7 +78,7 @@ class FortRequest {
   });
 
   FortRequest copyWith({
-    Command? command,
+    FortCommand? command,
     num? amount,
     String? customerName,
     String? customerEmail,
@@ -113,7 +113,7 @@ class FortRequest {
 
   Map<String, dynamic> asMap() {
     return <String, dynamic>{
-      'command': command.toUpperCaseString,
+      'command': command.name.toUpperCase(),
       'amount': '$amount',
       'customer_name': customerName,
       'customer_email': customerEmail,
