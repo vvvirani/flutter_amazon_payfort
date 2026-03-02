@@ -103,7 +103,7 @@ class AmazonPayfortPlugin : FlutterPlugin,
 
         val tokenName = call.argument<String?>("token_name")
         if (tokenName != null) {
-            requestMap["tokenName"] = tokenName
+            requestMap["token_name"] = tokenName
         }
 
         val phoneNumber = call.argument<String?>("phone_number")
